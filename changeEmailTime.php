@@ -9,10 +9,10 @@
     <title>AOT TT - Email Time Limit</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -24,8 +24,8 @@
     <?php
         error_reporting(0);
         include("header.php");
-        function test_blank($minutes,$seconds){            
-            if(!empty($minutes)){                
+        function test_blank($minutes,$seconds){
+            if(!empty($minutes)){
                 $count=1;
             }
             elseif(!empty($seconds)){
@@ -35,34 +35,34 @@
                 $count=0;
             }
             return ($count==0)?true:false;
-        }        
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){                            
+        }
+        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
             try{
-                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME); 
-                $time="";               
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                $time="";
                 if(mysqli_connect_errno())
                     throw new Exception("Could Not Connect To Database !");
                 $sql="SELECT value FROM settings WHERE field='emailTime'";
                 $result=mysqli_query($con,$sql);
-                $row = mysqli_fetch_assoc($result);                
+                $row = mysqli_fetch_assoc($result);
                 $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
                 if ($_SERVER["REQUEST_METHOD"] == "POST"){
                     $minutes=$_POST["minutes"];
-                    $seconds=$_POST["seconds"];                                                      
+                    $seconds=$_POST["seconds"];
                     if(test_blank($minutes,$seconds)){
-                        throw new Exception("Please Fill In All The Fields !");    
-                    }               
-                    else{                        
+                        throw new Exception("Please Fill In All The Fields !");
+                    }
+                    else{
                         if($row["value"]==($minutes*60)+$seconds){
                             throw new Exception("The Time Has Not Been Changed !");
                         }
                         $newTime=($minutes*60)+$seconds;
-                        $sql="UPDATE settings SET value='$newTime' WHERE field='emailTime'";                                                
-                        if(mysqli_query($con,$sql)){                            
+                        $sql="UPDATE settings SET value='$newTime' WHERE field='emailTime'";
+                        if(mysqli_query($con,$sql)){
                             $success="Time Limit Succesfully Changed In Database !";
                             $sql="SELECT value FROM settings WHERE field='emailTime'";
                             $result=mysqli_query($con,$sql);
-                            $row = mysqli_fetch_assoc($result);                
+                            $row = mysqli_fetch_assoc($result);
                             $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
                             $minutes=$seconds="";
                         }

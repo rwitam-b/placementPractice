@@ -9,19 +9,19 @@
     <title>AOT TT - About Us</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>   
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <br>    
+    <br>
     <div class="jumbotron">
         <h1 align="center">AOT Talent Transformation
         <br><small>Email Writing Practice</small></h1>
     </div>
     <div class="container-fluid">
-        <?php include("header.php");?>    
+        <?php include("header.php");?>
         <div class="well well-lg">
             <h2 align="center">About Us</h2><br>
             <p class="text-justify">Achievement is the target won by training and habituation. For most colleges training is one-time affair, but we believe in well structured and comprehensive approach that every student to reach his/her true potential. So we reinvented the Training
@@ -36,10 +36,10 @@
                 </ul>
             </p>
             <div class="text-right">
-                <kbd>Made with&nbsp;<span class="glyphicon glyphicon-heart"></span>&nbsp;by RB</kbd><br><br>
-            </div>            
+                <kbd>Made with&nbsp;<span class="glyphicon glyphicon-heart"></span>&nbsp;by Rwitam</kbd><br><br>
+            </div>
         </div>
         <?php include("footer.php");?>
-    </div>    
+    </div>
 </body>
 </html>

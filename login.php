@@ -10,9 +10,9 @@
     <title>AOT TT - Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>     
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -25,12 +25,12 @@
                 $data = htmlspecialchars($data);
                 return $data;
         }
-        if (!isset($_SESSION['aotemail_username']) and !isset($_SESSION['aotemail_student'])){           
+        if (!isset($_SESSION['aotemail_username']) and !isset($_SESSION['aotemail_student'])){
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);  
+                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
                     if(mysqli_connect_errno())
-                        throw new Exception();                                      
+                        throw new Exception();
                     $u_id = mysqli_real_escape_string($con,test_input($_POST["inputEmail"]));
                     $pass = mysqli_real_escape_string($con,test_input($_POST["inputPassword"]));
                     $u_id=strtolower($u_id);
@@ -63,13 +63,13 @@
                     }
                     else{
                             $error="Invalid Username/Password !";
-                    }    
+                    }
                 }
                 catch(Exception $e){
                     $error="Error Connecting To Database !";
-                }            
-            }        
-    ?>        
+                }
+            }
+    ?>
     <div class="jumbotron">
         <h1 align="center">AOT Talent Transformation
         <br><small>Email Writing Practice</small></h1>
@@ -125,11 +125,11 @@
             }
             setInterval(function(){ countdown(); },1000);
         </script>
-            <?php                 
+            <?php
                 }
             ?>
-            <div class="col-md-3"></div>    
-        </div>        
+            <div class="col-md-3"></div>
+        </div>
         <?php include("footer.php");?>
     </div>
     <?php
@@ -138,6 +138,6 @@
             $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
             header('Refresh:0;url='.$redirect);
         }
-    ?>    
+    ?>
 </body>
 </html>

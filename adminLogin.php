@@ -10,9 +10,9 @@
     <title>AOT TT - Admin Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>   
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -27,18 +27,18 @@
         if (!isset($_SESSION['aotemail_username']) and !isset($_SESSION['aotemail_admin'])){
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);  
+                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
                     if(mysqli_connect_errno())
                         throw new Exception();
-                    $admin_id = mysqli_real_escape_string($con,test_input($_POST["inputEmail"]));                    
-                    $pass = mysqli_real_escape_string($con,test_input($_POST["inputPassword"])); 
+                    $admin_id = mysqli_real_escape_string($con,test_input($_POST["inputEmail"]));
+                    $pass = mysqli_real_escape_string($con,test_input($_POST["inputPassword"]));
                     $admin_id=strtolower($admin_id);
-                    $pass=strtoupper(md5($admin_id.$pass));   
-                    if (!empty($admin_id) and !empty($pass)){    
+                    $pass=strtoupper(md5($admin_id.$pass));
+                    if (!empty($admin_id) and !empty($pass)){
                         $sql="SELECT name,password FROM admins WHERE email = '$admin_id'";
                         $data = mysqli_query($con, $sql);
                         if (mysqli_num_rows($data) == 1){
-                            $row = mysqli_fetch_array($data);                            
+                            $row = mysqli_fetch_array($data);
                             if(strcmp($row['password'],$pass)==0){
                                 session_unset();
                                 session_destroy();
@@ -76,21 +76,21 @@
         <br><small>Email Writing Practice</small></h1>
     </div>
     <div class="container-fluid">
-        <?php include("header.php");?>    
+        <?php include("header.php");?>
         <?php
             if (isset($_SESSION['aotemail_username']) and isset($_SESSION['aotemail_student'])){
                 $_SERVER['HTTP_REFERER']="test";
-                include("noAccess.php");        
+                include("noAccess.php");
             }
             elseif(isset($_SESSION['aotemail_admin']) and isset($_SESSION['aotemail_username'])){
                 $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
         ?>
         <script>
             $(document).ready(function() {
-                window.location = '<?php echo $redirect; ?>';                
-            });            
+                window.location = '<?php echo $redirect; ?>';
+            });
         </script>
-        <?php   
+        <?php
             }
             else{
         ?>
@@ -122,7 +122,7 @@
             <div class="col-md-6 alert alert-danger text-center">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong><?php echo $error?></strong>
-            </div>            
+            </div>
             <?php
                 }
                 if(!empty($success)){
@@ -141,15 +141,15 @@
             }
             setInterval(function(){ countdown(); },1000);
             </script>
-            <?php                 
+            <?php
                 }
             ?>
             <div class="col-md-3"></div>
         </div>
         <?php
             }
-        ?>        
-    </div>  
-    <?php include("footer.php");?>  
+        ?>
+    </div>
+    <?php include("footer.php");?>
 </body>
 </html>
