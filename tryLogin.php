@@ -1,0 +1,13 @@
+<?php
+    session_start();
+    if(!isset($_SESSION['aotemail_username'])){
+        if(isset($_COOKIE['aotemail_username']))
+            $_SESSION['aotemail_username']=$_COOKIE['aotemail_username'];
+        if(isset($_COOKIE['aotemail_admin'])){
+            $_SESSION['aotemail_admin']=$_COOKIE['aotemail_admin'];
+            exit();
+        }
+        if(isset($_COOKIE['aotemail_student']))
+            $_SESSION['aotemail_student']=$_COOKIE['aotemail_student'];                                
+    }
+?>
