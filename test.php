@@ -1,3 +1,3 @@
 <?php
-  $arr=array();
+  echo shell_exec("python -V");
 ?>
