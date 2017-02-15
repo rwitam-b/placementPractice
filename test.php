@@ -1,3 +1,3 @@
 <?php
-  echo shell_exec("python -V");
+  echo shell_exec("python -V 2>&1");
 ?>
