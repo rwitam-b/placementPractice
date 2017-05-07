@@ -31,6 +31,7 @@
             error_reporting(0);
             include("header.php");
             $referer='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/writing.php';
+            echo $referer;
             if (isset($_SESSION['aotemail_username'])){
                 if(isset($_SERVER['HTTP_REFERER']) and strcmp($_SERVER['HTTP_REFERER'],$referer)==0 and $_SERVER["REQUEST_METHOD"]=="POST"){
                     $text=htmlspecialchars(trim($_POST["text"]));
@@ -95,10 +96,10 @@
         </script>
             <?php
                 }
-                else{
-                    $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
-                    header('Refresh:0;url='.$redirect);
-                }
+//                 else{
+//                     $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
+//                     header('Refresh:0;url='.$redirect);
+//                 }
             }
             else{
                 $_SERVER['HTTP_REFERER']="test";
