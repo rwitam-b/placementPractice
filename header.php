@@ -46,7 +46,7 @@
                 <span class="caret"></span>&nbsp;&nbsp;</a>
                 <ul class="dropdown-menu">
                     <li><a href="addAdmin.php">Add Admin</a></li>
-                    <li><a href="editStudent.php">Students</a></li>
+                    <li><a href="studentReports.php">Student Details</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
             </li>
