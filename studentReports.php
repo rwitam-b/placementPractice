@@ -31,6 +31,7 @@
         for(var i in cols){
           $("#data thead tr").append("<th>"+cols[i].toUpperCase().replace("_"," ")+"</th>");
         }
+        console.log(data);
         for(var i in data){
           $("#data tbody").append("<tr></tr>");
           for(var j in cols){

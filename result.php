@@ -28,14 +28,13 @@
     </div>
     <div class="container-fluid">
         <?php
-//             error_reporting(0);
+            error_reporting(0);
             include("header.php");
             $referer="writing.php";
             if (isset($_SESSION['aotemail_username'])){
                 if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
-                    $text=htmlspecialchars(trim($_POST["text"]));
-                    $toProcess=str_replace(PHP_EOL,"<--rb-->",$text);
-                    $toProcess=str_replace(" ","<sp>",$toProcess);
+                    $text=htmlspecialchars(trim($_POST["text"]));                    
+                    $toProcess=str_replace(PHP_EOL,"<--nl-->",$text);
                     $question=$_POST["question"];
                     $processQuestion=str_replace(PHP_EOL,"<--rb-->",$question);
                     $processQuestion=str_replace(" ","<sp>",$question);
