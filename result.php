@@ -28,7 +28,7 @@
     </div>
     <div class="container-fluid">
         <?php
-            error_reporting(0);
+//            error_reporting(0);
             include("header.php");
             $referer="writing.php";
             if (isset($_SESSION['aotemail_username'])){
