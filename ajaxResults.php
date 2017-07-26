@@ -80,22 +80,7 @@
                         break;
                     }
                 }
-            }
-            $phrases=explode(",",$data["phrases"]);
-            foreach($subjectWords as $word){
-                if(ctype_alpha($word) and in_array($word,$phrases)){
-                    array_push($found,$word);
-                    if(($key = array_search($word, $phrases)) !== false) {
-                        unset($phrases[$key]);
-                    }                    
-                }
-                elseif(!ctype_alpha($word[strlen($word)-1]) and in_array(substr($word,0,-1),$phrases)){                    
-                    array_push($found,substr($word,0,-1));
-                    if(($key = array_search(substr($word,0,-1), $phrases)) !== false) {
-                        unset($phrases[$key]);
-                    }
-                }
-            }
+            }            
             if($match >= (count($subjectWords) / 3)){
                 $msg .= encodeSuccess("Subject Content Seems Relevant !");
             }
@@ -109,7 +94,7 @@
         return $msg;
     }
 
-    function checkRecipient($receiver){
+    function checkRecipient($receiver,$data){
         $msg = "";
         try{
             if(strlen($receiver) < 5){
@@ -121,53 +106,53 @@
             }
             elseif(startswith(strtolower($receiver),"dear ")){
                 $msg = "Receiver Salutation Is Case Sensitive!<br>";
-                $msg .= "\"" + encodeStrong(substr($receiver,0,4)) + "\" Should Have Been \"" + encodeStrong("Dear") + "\" !";
+                $msg .= "\"" . encodeStrong(substr($receiver,0,4)) . "\" Should Have Been \"" . encodeStrong("Dear") . "\" !";
                 $msg = encodeFailure($msg);
                 $receiver = substr($receiver,5);
             }
             else{
                 $tempMsg = "Receiver Salutation Wrong !<br>";
-                $tempMsg .= "Receiver Line Should Have Started With \"" + encodeStrong("Dear ") + "\" ";
-                $tempMsg .= "Instead Of \"" + encodeStrong(substr($receiver,0,4)) + "....\" !";
+                $tempMsg .= "Receiver Line Should Have Started With \"" . encodeStrong("Dear ") . "\" ";
+                $tempMsg .= "Instead Of \"" . encodeStrong(substr($receiver,0,4)) . "....\" !";
                 throw new Exception(encodeFailure($tempMsg));
             }
             $msg .= "<br>";
             if($receiver[strlen($receiver)-1] != ","){
-                $msg .= encodeFailure("There Should Be A \"" + encodeStrong(",") + "\" After The Recipient Name !") + "<br>";
+                $msg .= encodeFailure("There Should Be A \"" . encodeStrong(",") . "\" After The Recipient Name !") . "<br>";
             }
             else{
                 $receiver = substr($receiver,0,-1);
             }
             if($data["receiver_type"] == "S"){
-                $tempMsg = "The Receiver Type Here Is " + encodeStrong("Specific");
+                $tempMsg = "The Receiver Type Here Is " . encodeStrong("Specific");
                 $tempMsg .= ", Meaning That Exact Name Is Provided !";
-                $msg += encodeInfo($tempMsg);
+                $msg .= encodeInfo($tempMsg);
                 if($data["receiver"] == $receiver){
                     $msg .= encodeSuccess("Receiver Name Correct !");
                 }
                 else{
                     $tempMsg = "Receiver Name Incorrect !<br>";
-                    $tempMsg .= "\"" + encodeStrong($receiver) + "\" Should Have Been \"";
-                    $tempMsg .= encodeStrong($data["receiver"]) + "\" !";
-                    $msg += encodeFailure($tempMsg);
+                    $tempMsg .= "\"" . encodeStrong($receiver) . "\" Should Have Been \"";
+                    $tempMsg .= encodeStrong($data["receiver"]) . "\" !";
+                    $msg .= encodeFailure($tempMsg);
                 }
             }
             elseif($data["receiver_type"] == "NS"){
-                $tempMsg = "The Receiver Here Is " + encodeStrong("Not Mentioned,");
-                $tempMsg .= " But It Is Established That The Recipient Is " + encodeStrong("Singular In Nature!");
+                $tempMsg = "The Receiver Here Is " . encodeStrong("Not Mentioned,");
+                $tempMsg .= " But It Is Established That The Recipient Is " . encodeStrong("Singular In Nature!");
                 $msg .= encodeInfo($tempMsg);
                 $msg .= "Receiver Name Looks Right !<br>";
             }
             elseif($data["receiver_type"] == "NP"){
-                $tempMsg = "The Receiver Here Is " + encodeStrong("Not Mentioned,");
-                $tempMsg .= " But It Is Established That The Recipient Is " + encodeStrong("Generic In Nature!");
+                $tempMsg = "The Receiver Here Is " . encodeStrong("Not Mentioned,");
+                $tempMsg .= " But It Is Established That The Recipient Is " . encodeStrong("Generic In Nature!");
                 $msg .= encodeInfo($tempMsg);                
                 $names=explode(",",$data["receiver"]);
                 if(in_array($receiver,$names)){
                     $msg .= encodeSuccess("Receiver Name Looks Correct !");
                 }
                 else{
-                    $msg .= encodeFailure("Receiver Name \"" + encodeStrong($receiver) + "\" Does Not Look Right !");
+                    $msg .= encodeFailure("Receiver Name \"" . encodeStrong($receiver) . "\" Does Not Look Right !");
                     $tempMsg = "Name Suggestions -> ";
                     $tempMsg .= implode(" - ",$names);
                     $msg .= encodeInfo($tempMsg);
@@ -175,7 +160,7 @@
                     $receiver_lower=strtolower($receiver);
                     if(in_array($receiver,$names)){
                         $tempMsg = "You Got The Name Correct, But It Is Case Sensitive !<br>";
-                        $tempMsg .= "\"" + encodeStrong($receiver) + "\" Should Have Been \"";
+                        $tempMsg .= "\"" . encodeStrong($receiver) . "\" Should Have Been \"";
                         $index = array_search($receiver_lower,$names_lower);
                         $tempMsg .= encodeStrong($names[index]);
                         $tempMsg .= "\" !";
@@ -191,7 +176,7 @@
         return $msg;
     }
 
-    function checkSender($sender){
+    function checkSender($sender,$data){
         $msg = "";
         try{
             if(count($sender) == 0){
@@ -220,7 +205,7 @@
                     }
                     else{
                         $tempMsg = "Sender Name Incorrect !<br>";
-                        $tempMsg .= "\"" . encodeStrong($sender) . "\" Should Have Been \"";
+                        $tempMsg .= "\"" . encodeStrong($senderName) . "\" Should Have Been \"";
                         $tempMsg .= encodeStrong($data["sender"]) . "\" !";
                         $msg .= encodeFailure($tempMsg);
                     }
@@ -240,8 +225,112 @@
         return $msg;
     }
 
+    function checkPhrases($email,$data){
+        $msg = "";      
+        $found=array();  
+        try{            
+            $phrases=explode(",",$data["phrases"]);            
+            foreach($email as $line){
+                $temp = explode(" ",$line);
+                for($a=0;$a<count($temp);$a++){
+                    $word = $temp[$a];
+                    if(ctype_alpha($word) and in_array($word,$phrases) and !in_array($word,$found)){
+                        array_push($found,$word);                        
+                    }
+                    elseif(!ctype_alpha($word[strlen($word)-1]) and in_array(substr($word,0,-1),$phrases) and !in_array(substr($word,0,-1),$found)){                    
+                        array_push($found,substr($word,0,-1));
+                    }
+                    else{
+                        $b = -1;
+                        for($x=0;$x<count($phrases);$x++){
+                            if(startsWith($phrases[$x],$word)){
+                                $b = $x;
+                                break;
+                            }
+                        }
+                        if($b != -1){
+                            $check = explode(" ",$phrases[$b]);
+                            $flag = 1;
+                            for($x=0;$x<count($check);$x++){
+                                if(($a + $x) > (count($temp) - 1)){
+                                    $flag = 0;
+                                    break;
+                                }
+                                if(ctype_alpha($temp[$a + $x]) and $temp[$a + $x] != $check[$x]){
+                                    $flag = 0;
+                                    break;
+                                }
+                                if(!ctype_alpha($temp[$a + $x][strlen($temp[$a + $x])-1]) and substr($temp[$a + $x],0,-1) != $check[$x]){
+                                    $flag = 0;                                
+                                    break;
+                                }
+                            }
+                            if($flag==1 and !in_array($phrases[$b],$found)){                            
+                                array_push($found,$phrases[$b]);
+                            }                    
+                        }
+                    }
+                }
+            }
+            $temp = explode(",",$data["phrases"]);
+            if(count($temp) == count($found)){
+                $msg .= encodeSuccess("All The Phrases Of The Given Outline Were Used !");
+            }
+            else{
+                $tempMsg = "You Missed Out These Phrases -><br><pre>";
+                $missing = array_diff($temp,$found);
+                foreach($missing as $phraseMiss){
+                    $tempMsg .= " -" . $phraseMiss . "- ";
+                }
+                $tempMsg .= "</pre>";
+                $msg .= encodeFailure($tempMsg);
+            }
+            $GLOBALS["found"]=$found;
+        }
+        catch(Exception $e){
+            $msg = encodeFailure("Error In Phrase Checking");
+        }
+        return $msg;
+    }
 
-
+    function checkPhraseSequence($data) {
+        $msg = "";
+        try{
+            $found=$GLOBALS["found"];
+            if(count($found) == 0){
+                throw new Exception();
+            }
+            $actual = explode(",",$data["phrases"]);            
+            $misplaced = array();                  
+            foreach($found as $item){                
+                if(array_search($item,$actual) != array_search($item,$found)){
+                    array_push($misplaced,$item);                    
+                }                
+            }
+            if(count($misplaced) == 0){
+                if(count($actual) != count($found)){
+                    $msg .= encodeSuccess("The Phrases Were Being Used In Proper Sequence !");
+                    $msg .= encodeFailure("But All The Phrases Were Not Used !");
+                }
+                else{
+                    $msg .= encodeSuccess("The Phrases Are In Proper Sequence !");
+                }
+            }
+            else{
+                $tempMsg = "The Sequence Of The Following Phrases Were Not Maintained !<br><pre>";
+                foreach($misplaced as $phraseMiss){
+                    $tempMsg .= " -" . $phraseMiss . "- ";
+                }
+                $tempMsg .= "\n</pre>";
+                $tempMsg .= "<br>Better Try And Maintain The Order !";
+                $msg .= encodeFailure($tempMsg);
+            }
+        }
+        catch(Exception $e){
+            $msg .= encodeFailure("No Phrases Were Used At All !");
+        }
+        return $msg;
+    }
 
     if (isset($_SESSION['aotemail_username']) and $_SERVER["REQUEST_METHOD"]=="POST" and isset($_POST["q_id"]) and isset($_POST["text"])){
         try{            
@@ -281,8 +370,8 @@
             if(count($body)==0){
                 throw new Exception(encodeOutput("Error", encodeFailure("Email Looks Incomplete !")));
             }
-            array_push($results,encodeOutput("Usage Of Outline Phrases",checkPhrases($body)));
-            array_push($results,encodeOutput("Order Of Outlines Phrases", checkPhraseSequence()));
+            array_push($results,encodeOutput("Usage Of Outline Phrases",checkPhrases($text,$data)));
+            array_push($results,encodeOutput("Order Of Outlines Phrases", checkPhraseSequence($data)));
             foreach($results as $line){
                 echo $line;
             }

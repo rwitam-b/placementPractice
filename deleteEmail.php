@@ -9,10 +9,10 @@
     <title>AOT TT - Email Deletion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="includes/bootstrap-tagsinput.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="includes/jquery.min.js"></script>
+    <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="includes/bootstrap-tagsinput.css">    
     <script src="includes/bootstrap-tagsinput.js"></script>
 </head>
 <body>
@@ -32,7 +32,7 @@
         });
         function refreshFields(val){
             if(val){
-                $.post("ajaxFormFields.php",{id: val},
+                $.post("ajaxFormFields.php",{id: val, type: "1"},
                     function (response){
                         obj=JSON.parse(response);
                         $("input[name='from']").val(obj.sender);
@@ -56,7 +56,7 @@
         function deleteQuestion(val){
             var id=$("#select_email").val();
             if(id){
-                $.post("ajaxEmailDelete.php",{id:id},
+                $.post("ajaxDelete.php",{id:id,type: "1"},
                     function(response){
                         $("#text").html(response);
                         $(".alert").show();

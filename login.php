@@ -10,9 +10,9 @@
     <title>AOT TT - Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="includes/jquery.min.js"></script>
+    <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -51,7 +51,7 @@
                                 $_SESSION['aotemail_student']=$u_id;
                                 setcookie("aotemail_username", $_SESSION['aotemail_username'], time() + (86400 * 30), "/");
                                 setcookie("aotemail_student", $_SESSION['aotemail_student'], time() + (86400 * 30), "/");
-                                $success='Login Succesful !<br>Redirecting To Home Page In <span id="counter">5</span> Seconds !';
+                                $success='Login Succesful !<br>Redirecting To Home Page...';
                             }
                             else{
                                 $error="User Found In The System !<br>Please Provide The Correct Password To Gain Access !";
@@ -116,14 +116,10 @@
                 <strong><?php echo $success?></strong>
             </div>
             <script>
-            function countdown() {
-                var i = document.getElementById('counter');
-                if (parseInt(i.innerHTML)<=2) {
-                    location.href = '<?php echo $redirect;?>';
-                }
-                i.innerHTML = parseInt(i.innerHTML)-1;
+            function countdown() {                
+                location.href = '<?php echo $redirect;?>';                
             }
-            setInterval(function(){ countdown(); },1000);
+            setTimeout(function(){ countdown(); },2000);
         </script>
             <?php
                 }

@@ -9,9 +9,9 @@
     <title>AOT TT - Email Writing</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="includes/jquery.min.js"></script>
+    <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         .btn{
             white-space:normal !important;
@@ -35,7 +35,7 @@
             <h2 class="text-center text-danger"><strong>Go through the guide provided before you attempt the test</strong></h2>
         </div><br><br>
         <div class="row">
-            <form id="goToWrite" method="post" action="writing.php">
+            <form id="goToWrite" method="post" action="emailWriting.php">
                 <div class="col-md-5"></div>
                 <div class="col-md-2">
                     <input type="hidden" name="validity" value="<?php echo $_SESSION['aotemail_username'];?>">

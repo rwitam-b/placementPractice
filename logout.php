@@ -20,9 +20,9 @@
     <title>AOT TT - Logout</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="includes/jquery.min.js"></script>
+    <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -49,7 +49,7 @@
                         <h4 class="modal-title">Thank You For Using Our Services</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Logging Out In <span id="counter">5</span> Second(s).</p>
+                        <p>Logging Out...</p>
                     </div>
                 </div>
             </div>
@@ -64,13 +64,9 @@
         </div>
         <script>
             function countdown() {
-                var i = document.getElementById('counter');
-                if (parseInt(i.innerHTML)<=2) {
-                    location.href = '<?php echo $redirect;?>';
-                }
-                i.innerHTML = parseInt(i.innerHTML)-1;
+                location.href = '<?php echo $redirect;?>';                
             }
-            setInterval(function(){ countdown(); },1000);
+            setTimeout(function(){ countdown(); },3000);
         </script>
         <?php
             }
