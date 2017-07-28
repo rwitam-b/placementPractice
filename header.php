@@ -53,11 +53,13 @@
                 <span class="caret"></span>&nbsp;&nbsp;</a>
                 <ul class="dropdown-menu">
                     <li> <a href="addEssay.php"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Essay</a> </li>
+                    <li> <a href="addPicture.php"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add Picture</a> </li>
                     <li> <a href="modifyEssay.php"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Modify Essay</a> </li>
-                    <li> <a href="deleteEssay.php"><span class="glyphicon glyphicon-remove"></span>&nbsp;Delete Essay</a> </li>
-                    <li> <a href="changeEssayTime.php"><span class="glyphicon glyphicon-time"></span>&nbsp;Change Time Limit</a> </li>
+                    <li> <a href="deleteEssay.php"><span class="glyphicon glyphicon-remove"></span>&nbsp;Delete Essay</a> </li>                    
+                    <li> <a href="deletePicture.php"><span class="glyphicon glyphicon-remove"></span>&nbsp;Delete Picture</a> </li>
+                    <li> <a href="changeEssayTime.php"><span class="glyphicon glyphicon-time"></span>&nbsp;Change Time Limit</a> </li>                    
                 </ul>
-            </li>
+            </li>            
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">

@@ -10,7 +10,7 @@
             }
             elseif($_POST["type"]=="2"){
                 $sql="SELECT * FROM essay_questions WHERE id='$id'";                
-            }
+            }            
             $result=mysqli_query($con,$sql);
             $row=mysqli_fetch_array($result, MYSQLI_ASSOC);
             echo json_encode($row);

@@ -6,7 +6,7 @@
 <html lang="en">
 
 <head>
-    <title>AOT TT - Essay Deletion</title>
+    <title>AOT TT - Picture Deletion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -30,24 +30,21 @@
         });
         function refreshFields(val){
             if(val){
-                $.post("ajaxFormFields.php",{id: val, type: "2"},
-                    function (response){
-                        obj=JSON.parse(response);                        
-                        $("textarea[name='question']").html(obj.question);                        
-                    }
-                );
+                $("#picture").attr("src","picQuestions/"+val);
+                $("#picture").attr("alt",$("#select_picture option:selected").text());
             }
             else{                
-                $("textarea[name='question']").html("");
+                $("#picture").attr("src","");
+                $("#picture").attr("alt","");            
             }
         }
         function again(){
-            window.location="deleteEssay.php";
+            window.location="deletePicture.php";
         }
         function deleteQuestion(){
-            var id=$("#select_email").val();
+            var id=$("#select_picture").val();
             if(id){
-                $.post("ajaxDelete.php",{id:id,type: "2"},
+                $.post("ajaxDelete.php",{id:id,type: "3"},
                     function(response){
                         $("#text").html(response);
                         $(".alert").show();
@@ -59,24 +56,21 @@
         }
     </script>
     <div class="container-fluid">
-        <h2 align="center">Delete Essay</h2><br>
+        <h2 align="center">Delete Picture</h2><br>
         <div class="row form-group">
             <div class="col-md-1"></div>
             <div class="col-md-10 col-xs-12">
-                <select class="form-control" id="select_email" onchange="refreshFields(this.value)">
+                <select class="form-control" id="select_picture" onchange="refreshFields(this.value)">
                     <?php
-                        echo "<option value=\"\">Select A Question</option>";
+                        echo "<option value=\"\">Select A Caption</option>";
                         try{
                             $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
                             if(mysqli_connect_errno())
                                 throw new Exception("Could Not Connect To Database !");
-                            $sql="SELECT * FROM essay_questions";
-                            $result=mysqli_query($con,$sql);
-                            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {                                
-                                $ques=str_replace(PHP_EOL," ",$row["question"]);
-                                if(strlen($ques)>150)
-                                    $ques=substr($ques,0,150)."....";
-                                echo "<option value=\"".$row["id"]."\">".$ques."</option>";
+                            $sql="SELECT * FROM picture_questions";
+                            $result=mysqli_query($con,$sql);                            
+                            while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                                echo "<option value=\"".$row["filename"]."\">".$row["caption"]."</option>";
                             }
                             mysqli_free_result($result);
                             mysqli_close($con);
@@ -92,7 +86,7 @@
         <div class="row form-group">
             <div class="col-md-2"></div>
             <div class="col-md-8 col-xs-12">
-                <textarea disabled name="question" style="resize:none;" rows=10 placeholder="Question" class="form-control"></textarea>
+                <img id="picture" src="" class="img-thumbnail img-responsive" alt="">
             </div>
             <div class="col-md-2"></div>
         </div>        
