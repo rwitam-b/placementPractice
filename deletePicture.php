@@ -12,6 +12,13 @@
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>    
+    <style>
+        #picture{
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <br>
@@ -82,14 +89,14 @@
                 </select>
             </div>
             <div class="col-md-1"></div>
-        </div><br><br>        
+        </div><br>        
         <div class="row form-group">
             <div class="col-md-2"></div>
             <div class="col-md-8 col-xs-12">
                 <img id="picture" src="" class="img-thumbnail img-responsive" alt="">
             </div>
             <div class="col-md-2"></div>
-        </div>        
+        </div><br><br>
         <div class="row form-group">
             <div class="col-md-5"></div>
             <div class="col-md-2 col-xs-12">

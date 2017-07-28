@@ -136,7 +136,7 @@
                             {
                                 image: '<?php echo empty($pic)?'':$printPicAddress;?>',
                                 alignment: "center",
-                                height: 400
+                                width: 400
                             },
                             '\n',
                             { 
