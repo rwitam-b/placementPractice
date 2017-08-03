@@ -91,7 +91,7 @@
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 col-xs-12">
-                    <button class="btn btn-primary btn-block" onclick="save()">Download</button>
+                    <button class="btn btn-primary btn-block" onclick="save()">Download Result PDF</button>
                 </div>
                 <div class="col-sm-4"></div>
             </div>

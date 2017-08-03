@@ -88,7 +88,7 @@
             <div class="row">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4 col-xs-12">
-                    <button class="btn btn-primary btn-block" onclick="save()">Download</button>
+                    <button class="btn btn-primary btn-block" onclick="save()">Download Result PDF</button>
                 </div>
                 <div class="col-sm-4"></div>
             </div>
@@ -127,7 +127,7 @@
                                 widths: [ '*', '*'],
                         
                                 body: [
-                                    [ { text: 'Name', bold: true }, '<?php echo $_SESSION['aotemail_username'];?>', ],
+                                    [ { text: 'Name', bold: true }, '<?php echo $_SESSION['username'];?>', ],
                                     [ { text: 'Word Count', bold: true }, '<?php echo $words;?>', ],
                                     [ { text: 'Remark', bold: true }, '<?php echo $wordSubtext;?>', ]
                                 ]
