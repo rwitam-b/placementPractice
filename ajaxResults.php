@@ -326,9 +326,9 @@
             $sql="SELECT * FROM email_questions WHERE id='$id'";
             $result=mysqli_query($con,$sql);
             $data = mysqli_fetch_assoc($result);              
-            $text=trim($_POST["text"]);            
-            $text = preg_replace("/(<--nl-->)+/", "<--nl-->", $text);            
-            $text = explode("<--nl-->",$text);
+            $text=trim($_POST["text"]);
+            $text=json_decode($text);
+            $text=explode(PHP_EOL,$text);
             $results=array();
             array_push($results,encodeOutput("Subject", checkSubject($text[0],$data)));
             $index=0;

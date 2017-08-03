@@ -55,8 +55,7 @@
             $result=mysqli_query($con,$sql);
             $row = mysqli_fetch_assoc($result);
             $question=$row["question"];
-            $text=htmlspecialchars(trim($_POST["text"]));                    
-            $toProcess=str_replace(PHP_EOL,"<--nl-->",$text);            
+            $text=htmlspecialchars(trim($_POST["text"]));
             $words=$_POST["words"];
             $wordColor=(string)$_POST["wordColor"];
             if(intval($words)<50)
@@ -258,7 +257,7 @@
                     $("#timer").css("color","red");
                     $("#wordCount").css("color","<?php echo $wordColor;?>");
                     $("html, body").animate({ scrollTop: 300 }, 2000);
-                    $.post("ajaxResults.php",{"q_id": "<?php echo $q_id;?>", "text": "<?php echo $toProcess;?>"},
+                    $.post("ajaxResults.php",{"q_id": "<?php echo $q_id;?>", "text": "<?php echo json_encode($toProcess);?>"},
                         function (response){
                             try{
                                 $("#check").html(response);
