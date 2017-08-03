@@ -25,7 +25,7 @@
     </div><br>
     <?php
         include("header.php");
-        error_reporting(0);
+//         error_reporting(0);
         $caption="";
         function test_input($data) {
                 $data = trim($data);
@@ -69,7 +69,7 @@
                                 $success="Picture Successfully Uploaded!";
                                 $caption="";
                             }else{
-                                throw new Exception("Picture upload failed!");
+                                throw new Exception("Picture upload failed because of database failure!");
                             }
                         } else {
                             throw new Exception("Picture upload failed!");
