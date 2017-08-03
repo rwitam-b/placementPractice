@@ -54,6 +54,11 @@
                     throw new Exception("A picture with the provided caption already exists in the database!");
                 }                    
                 $saveDir="picQuestions/";
+                $file="picQuestions/";
+                if(is_dir($file))
+                    echo ("$file is a directory");
+                else
+                    echo ("$file is not a directory");
                 if(isset($_POST["submit"])) {                        
                     $check = getimagesize($_FILES["image"]["tmp_name"]);
                     if($check !== false) {
