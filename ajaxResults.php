@@ -70,23 +70,6 @@
             if(!ctype_alpha($sub[strlen($sub)-1])){
                 $msg .= encodeFailure("Subject Should Not Have \"" . encodeStrong($sub[strlen($sub)-1]) . "\" At The End !");
                 $msg .= "<br>";
-            }            
-            $match = 0;
-            array_shift($subjectWords);     
-            $questionWords = explode(" ",$data["question"]);       
-            foreach($subjectWords as $word){
-                foreach($questionWords as $word2){
-                    if(strlen($word) > 2 and startsWith($word2,$word)){
-                        $match += 1;
-                        break;
-                    }
-                }
-            }            
-            if($match >= (count($subjectWords) / 3)){
-                $msg .= encodeSuccess("Subject Content Seems Relevant !");
-            }
-            else{
-                $msg .= encodeFailure("Subject Content Does Not Seem Relevant !");
             }
         }catch(Exception $e){
             $msg .= $e->getMessage()."<br>";
@@ -196,6 +179,7 @@
             }
             else{
                 $msg = encodeSuccess("Leave Taking Is Appropriate !");
+                $msg .= "<br>";
                 $senderName = $sender[1];
                 if($data["sender_type"] == "S"){
                     $tempMsg = "The Sender Type Here Is " . encodeStrong("Specific");

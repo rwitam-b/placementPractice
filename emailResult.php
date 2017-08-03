@@ -1,6 +1,7 @@
 <?php
     require 'sessionize.php';
     require 'loginPrivilege.php';
+    require_once 'DB.php';
     $referer="emailWriting.php";
     if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
 ?>
@@ -42,14 +43,20 @@
     </div><br>
     <div class="container-fluid">
         <?php
+        try{
             error_reporting(0);
             include("header.php");
             date_default_timezone_set("Asia/Kolkata");
+            $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            if(mysqli_connect_errno())
+                throw new Exception();
+            $q_id=$_POST["q_id"];
+            $sql="SELECT * FROM email_questions WHERE id='$q_id'";
+            $result=mysqli_query($con,$sql);
+            $row = mysqli_fetch_assoc($result);
+            $question=$row["question"];
             $text=htmlspecialchars(trim($_POST["text"]));                    
-            $toProcess=str_replace(PHP_EOL,"<--nl-->",$text);
-            $question=$_POST["question"];
-            $processQuestion=str_replace(PHP_EOL,"<--rb-->",$question);
-            $processQuestion=str_replace(" ","<sp>",$question);
+            $toProcess=str_replace(PHP_EOL,"<--nl-->",$text);            
             $words=$_POST["words"];
             $wordColor=(string)$_POST["wordColor"];
             if(intval($words)<50)
@@ -58,7 +65,12 @@
                 $wordSubtext="Looks Good !";
             else
                 $wordSubtext="You Seem To Have Crossed The Average Word Limit !";
-            $q_id=$_POST["q_id"];
+            
+        }   
+        catch(Exception $e){
+            $display="Error Connecting To Database !<br><br>Please Try Again Later !";
+            $stat="no";
+        }        
         ?>
         <div id="report" class="container-fluid">
             <div id="headLine" class="row">
@@ -114,17 +126,20 @@
                         }
                     };
                 })(jQuery);
+
                 $.fn.ignore = function(sel){
                     return this.clone().find(sel||">*").remove().end();
                 };
+
                 function check(){
                     AtD.checkTextAreaCrossAJAX("writtenText", "checkLink", "Edit Text");
                 }
+
                 function save(){
                     var extractedQuestion=$("#questionHTML").text().substring(0,$("#questionHTML").text().indexOf("Outline"));
                     extractedQuestion+="\n\n"+$("#questionHTML").text().substring($("#questionHTML").text().indexOf("Outline"));                    
                     var dd = {
-                        pageSize: 'A4',
+                        pageSize: "A4",
                         header: {
                             text: "<?php echo date("l jS F Y h:i:s A");?>",
                             style:
@@ -133,45 +148,45 @@
                             }
                         },
                         content: [
-                            '\n\n',    
+                            "\n\n",    
                             { 
-                                text: 'AOT Talent Transformation', 
-                                style: 'header' 
+                                text: "AOT Talent Transformation", 
+                                style: "header" 
                             },                        
-                            '\n\n',
+                            "\n\n",
                             {
-                                text: 'Email Writing Practice',
-                                style: 'subheader'
+                                text: "Email Writing Practice",
+                                style: "subheader"
                             },
-                            '\n',
+                            "\n",
                             {
-                                table: {
-                                headerRows: 0,
-                                widths: [ '*', '*'],
-                        
-                                body: [
-                                    [ { text: 'Name', bold: true }, '<?php echo $_SESSION['aotemail_username'];?>', ],
-                                    [ { text: 'Word Count', bold: true }, '<?php echo $words;?>', ],
-                                    [ { text: 'Remark', bold: true }, '<?php echo $wordSubtext;?>', ]
-                                ]
-                            }
+                                table: {                                    
+                                    headerRows: 0,
+                                    widths: [ "*", "*"],
+                            
+                                    body: [
+                                        [ { text: "Name", bold: true }, "<?php echo $_SESSION['username'];?>", ],
+                                        [ { text: "Word Count", bold: true }, "<?php echo $words;?>", ],
+                                        [ { text: "Remark", bold: true }, "<?php echo $wordSubtext;?>", ]
+                                    ]
+                                }                            
                             },
-                            '\n\n\n\n',
+                            "\n\n\n\n",
                             {
-                                text: extractedQuestion,
-                                style: 'subheader'
+                                text: "<?php echo $question;?>",
+                                style: "subheader"
                             },
-                            '\n\n',
+                            "\n\n",
                             { 
-                                text: '<?php echo $text;?>', 
-                                style: 'text'
+                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$text);?>".replace(/<--nl-->/g,"\n"), 
+                                style: "text"
                             },
-                            '\n\n',
+                            "\n\n",
                             {
                                 table: {
                                 widths: [ '*'],
                                 body: [
-                                    [ { text: 'SUBJECT', style: 'subheader' } ],
+                                    [ { text: "SUBJECT", style: "subheader" } ],
                                     [ { text: $("#subject").ignore("h4").innerText().trim(), style: 'text' }]
                                 ]
                                 }
@@ -234,41 +249,37 @@
                             }
                         }
                     }
-                    var name="essay_"+"<?php echo $_SESSION['aotemail_username'];?>".toLowerCase().replace(/\s+/g,"_")+"@"+new Date().toLocaleDateString().replace(/[/]/g,"_");
+                    var name="essay_"+"<?php echo $_SESSION['username'];?>".toLowerCase().replace(/\s+/g,"_")+"@"+new Date().toLocaleDateString().replace(/[/]/g,"_");
                     pdfMake.createPdf(dd).download(name);                    
                 }
+
                 $(document).ready(function(){
                     $("#headLine").css("background-color","#222222");
                     $("#timer").css("color","red");
                     $("#wordCount").css("color","<?php echo $wordColor;?>");
                     $("html, body").animate({ scrollTop: 300 }, 2000);
                     $.post("ajaxResults.php",{"q_id": "<?php echo $q_id;?>", "text": "<?php echo $toProcess;?>"},
-                    function (response){
-                        try{
-                            $("#check").html(response);
+                        function (response){
+                            try{
+                                $("#check").html(response);
+                            }
+                            catch(err){
+                                $("#check").html("<div class=\"row text-center alert alert-danger\"><strong>A Technical Glitch Occured !<br>Please Try Again Later !</strong></div>");
+                            }
                         }
-                        catch(err){
-                            $("#check").html("<div class=\"row text-center alert alert-danger\"><strong>A Technical Glitch Occured !<br>Please Try Again Later !</strong></div>");
-                        }
-                    });
-                    $("#create_pdf").on("click", function() {                        
-                        $("body").scrollTop(0);
-                        imagePieces = [];
-                        imagePieces.length = 0;
-                        main();
-                    });
-                });
+                    );                    
+                });                
             </script>
-        </div>
-        <?php include("footer.php");?>
+        </div>        
     </div>
+    <?php
+        include("footer.php");
+        }
+        else{
+            $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
+            header('Refresh:0;url='.$redirect);
+        }
+    ?>
 </body>
 </html>
-<?php
-    }
-    else{
-        $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
-        header('Refresh:0;url='.$redirect);
-    }
-?>
         

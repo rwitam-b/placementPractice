@@ -118,7 +118,7 @@
                                 widths: [ '*', '*'],
                         
                                 body: [
-                                    [ { text: 'Name', bold: true }, '<?php echo $_SESSION['aotemail_username'];?>', ],
+                                    [ { text: 'Name', bold: true }, '<?php echo $_SESSION['username'];?>', ],
                                     [ { text: 'Word Count', bold: true }, '<?php echo $words;?>', ],
                                     [ { text: 'Remark', bold: true }, '<?php echo $wordSubtext;?>', ]
                                 ]
@@ -131,7 +131,7 @@
                             },
                             '\n',
                             { 
-                                text: '<?php echo $text;?>', 
+                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$text);?>".replace(/<--nl-->/g,"\n"), 
                                 style: 'text'
                             }
                         ],

@@ -53,7 +53,7 @@
                 if(mysqli_num_rows(mysqli_query($con,$sql))>0){
                     throw new Exception("A picture with the provided caption already exists in the database!");
                 }                    
-                $saveDir="picQuestions/";                    
+                $saveDir="picQuestions/";
                 if(isset($_POST["submit"])) {                        
                     $check = getimagesize($_FILES["image"]["tmp_name"]);
                     if($check !== false) {

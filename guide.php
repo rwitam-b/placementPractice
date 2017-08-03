@@ -184,10 +184,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="well well-lg">
-                    <p><strong>As a member of your residential society, write an email to inspector of local Police station, Mr. Sharma, informing him about miscreants who ride their bikes rashly every evening outside your society.  Sign the email as William.</strong></p><br>
+                    <p><strong>As a member of your residential society, write an email to the inspector of local Police station, Mr. Sharma, informing him about miscreants who ride their bikes rashly every evening outside your society.  Sign the email as William.</strong></p><br>
                     <strong>Phrases : </strong><mark class="text-info">residential area - ride - rashly - children - play - elderly - walk - grocery shop - across the road - dangerous - accidents - nuisance - action - immediately</mark><br><br>
                     <div class="well" id="email">Subject: Rash driving<br>
-                    Dear Mr.Sharma,<br>
+                    Dear Mr. Sharma,<br>
                     I am a resident of Peerless Nagar, a <span class="bg-info">residential area</span>. I have noticed that a few young men <span class="bg-info">ride</span> their bikes <span class="bg-info">rashly</span> in the neighborhood. Most of the time, the <span class="bg-info">children</span> <span class="bg-info">play</span> on the streets or the <span class="bg-info">elderly</span> people <span class="bg-info">walk</span>. People who go to the <span class="bg-info">grocery shop</span> <span class="bg-info">across the road</span> also feel unsafe.<br>The situation is quite <span class="bg-info">dangerous</span>, and can lead to major <span class="bg-info">accidents</span>. These people are a <span class="bg-info">nuisance</span> to the society. Please take necessary <span class="bg-info">action</span> <span class="bg-info">immediately</span>.<br>                    Regards,<br>
                     William
                     </div>

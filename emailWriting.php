@@ -25,7 +25,7 @@
     </style>  
 </head>
 
-<body oncontextmenu="return false;" oncpy="return false;" onpaste="return false;" oncut="return false;" ondrag="return false;" ondrop="return false;">
+<body oncontextmenu="return false;" oncpy="return false;" onpate="return false;" oncut="return false;" ondrag="return false;" ondrop="return false;">
     <br>
     <div class="jumbotron">          
         <img src="images/banner.png" class="banner banner-small">
@@ -219,8 +219,7 @@
             <form method="post" action="emailResult.php">
                 <input type="hidden" name="q_id" value="<?php echo $q_id;?>">
                 <input type="hidden" name="wordColor" value="">
-                <input type="hidden" id="words" name="words" value="">
-                <input type="hidden" name="question" value="<?php echo $display;?>">
+                <input type="hidden" id="words" name="words" value="">                
                 <div class="row form-group">
                     <textarea required name="text" unselectable="on" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" id="email_data" style="resize:none;" rows=10 placeholder="Type here ->" class="form-control col-md-12"></textarea>
                 </div>
