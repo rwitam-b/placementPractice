@@ -1,7 +1,9 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
-    if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"]) and $_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST["id"])){
+    require 'adminPrivilege.php';
+
+    if($_SERVER["REQUEST_METHOD"] == "POST" and isset($_POST["id"])){
         $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         $id=$_POST["id"];
         if(isset($_POST["type"])){
@@ -19,7 +21,6 @@
         }
     }
     else{
-        $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
-        header('Refresh:0;url='.$redirect);
+        echo "Not Available";
     }
 ?>

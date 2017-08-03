@@ -1,6 +1,6 @@
 <?php
-    require 'tryLogin.php';
-    require 'DB.php';
+    require 'sessionize.php';
+    require_once 'DB.php';
 
     function startsWith($haystack, $needle) {
         // search backwards starting from haystack length characters from the end
@@ -17,12 +17,13 @@
     }
     
     function encodeOutput($head, $body){
-        $show = "<div class=\"well text-center myWell\"><h4>".encodeStrong(strtoupper($head));        
+        $id=str_replace(" ","_",strtolower($head));
+        $show = "<div id=\"$id\" class=\"well text-center myWell\"><h4>".encodeStrong(strtoupper($head));        
         if(strpos($body, "class=\"text-danger\">")!== false){
-            $show = $show." - <span class=\"text-danger glyphicon glyphicon-remove\"></span></h4><br>".$body."</div>";
+            $show = $show." -> <span class=\"text-danger glyphicon glyphicon-remove\"></span></h4><br>".$body."</div>";
         }
         else{
-            $show = $show." - <span class=\"text-success glyphicon glyphicon-ok\"></span></h4><br>".$body."</div>";
+            $show = $show." -> <span class=\"text-success glyphicon glyphicon-ok\"></span></h4><br>".$body."</div>";
         }
         return $show;
     }
@@ -332,7 +333,7 @@
         return $msg;
     }
 
-    if (isset($_SESSION['aotemail_username']) and $_SERVER["REQUEST_METHOD"]=="POST" and isset($_POST["q_id"]) and isset($_POST["text"])){
+    if (isLoggedIn() and $_SERVER["REQUEST_METHOD"]=="POST" and isset($_POST["q_id"]) and isset($_POST["text"])){
         try{            
             $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if(mysqli_connect_errno())
@@ -371,7 +372,7 @@
                 throw new Exception(encodeOutput("Error", encodeFailure("Email Looks Incomplete !")));
             }
             array_push($results,encodeOutput("Usage Of Outline Phrases",checkPhrases($text,$data)));
-            array_push($results,encodeOutput("Order Of Outlines Phrases", checkPhraseSequence($data)));
+            array_push($results,encodeOutput("Order Of Outline Phrases", checkPhraseSequence($data)));
             foreach($results as $line){
                 echo $line;
             }
@@ -381,6 +382,6 @@
         }
     }
     else{
-        // echo "Not Available";
+        echo "Not Available";
     }
 ?>

@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +10,7 @@
     <title>AOT TT - Essay Time Limit</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -17,10 +19,10 @@
 
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-            <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <?php
         error_reporting(0);
         include("header.php");
@@ -35,47 +37,46 @@
                 $count=0;
             }
             return ($count==0)?true:false;
-        }
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
-            try{
-                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                $time="";
-                if(mysqli_connect_errno())
-                    throw new Exception("Could Not Connect To Database !");
-                $sql="SELECT value FROM settings WHERE field='essayTime'";
-                $result=mysqli_query($con,$sql);
-                $row = mysqli_fetch_assoc($result);
-                $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
-                if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                    $minutes=$_POST["minutes"];
-                    $seconds=$_POST["seconds"];
-                    if(test_blank($minutes,$seconds)){
-                        throw new Exception("Please Fill In All The Fields !");
+        }        
+        try{
+            $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            $time="";
+            if(mysqli_connect_errno())
+                throw new Exception("Could Not Connect To Database !");
+            $sql="SELECT value FROM settings WHERE field='essayTime'";
+            $result=mysqli_query($con,$sql);
+            $row = mysqli_fetch_assoc($result);
+            $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
+            if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $minutes=$_POST["minutes"];
+                $seconds=$_POST["seconds"];
+                if(test_blank($minutes,$seconds)){
+                    throw new Exception("Please Fill In All The Fields !");
+                }
+                else{
+                    if($row["value"]==($minutes*60)+$seconds){
+                        throw new Exception("The Time Has Not Been Changed !");
+                    }
+                    $newTime=($minutes*60)+$seconds;
+                    $sql="UPDATE settings SET value='$newTime' WHERE field='essayTime'";
+                    if(mysqli_query($con,$sql)){
+                        $success="Time Limit Succesfully Changed In Database !";
+                        $sql="SELECT value FROM settings WHERE field='essayTime'";
+                        $result=mysqli_query($con,$sql);
+                        $row = mysqli_fetch_assoc($result);
+                        $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
+                        $minutes=$seconds="";
                     }
                     else{
-                        if($row["value"]==($minutes*60)+$seconds){
-                            throw new Exception("The Time Has Not Been Changed !");
-                        }
-                        $newTime=($minutes*60)+$seconds;
-                        $sql="UPDATE settings SET value='$newTime' WHERE field='essayTime'";
-                        if(mysqli_query($con,$sql)){
-                            $success="Time Limit Succesfully Changed In Database !";
-                            $sql="SELECT value FROM settings WHERE field='essayTime'";
-                            $result=mysqli_query($con,$sql);
-                            $row = mysqli_fetch_assoc($result);
-                            $time="".intval($row["value"]/60)." Minutes, ".($row["value"]%60)." Seconds";
-                            $minutes=$seconds="";
-                        }
-                        else{
-                            throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
-                        }
+                        throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
                     }
                 }
-                mysqli_close($con);
             }
-            catch(Exception $e){
-                $error=$e->getMessage();
-            }
+            mysqli_close($con);
+        }
+        catch(Exception $e){
+            $error=$e->getMessage();
+        }
     ?>
     <div class="container-fluid">
         <h2 align="center">Change Essay Time Limit</h2><br>
@@ -147,11 +148,7 @@
             }
         ?>
     </div>
-    <?php
-        }else{
-            $_SERVER['HTTP_REFERER']="test";
-            include("noAccess.php");
-        }
+    <?php        
         include("footer.php");
     ?>
 </body>

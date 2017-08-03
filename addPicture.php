@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,19 +11,21 @@
     <title>AOT TT - Picture Addition</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <?php
         include("header.php");
-        // error_reporting(0);
+        error_reporting(0);
         $caption="";
         function test_input($data) {
                 $data = trim($data);
@@ -36,51 +39,50 @@
             else
                 return false;
         }
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
-            if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                try{
-                    $filename=$filetype="";
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                    if(mysqli_connect_errno())
-                        throw new Exception("Could Not Connect To Database !");   
-                    $caption=test_input($_POST["caption"]);
-                    if(test_blank($caption)){
-                        throw new Exception("Please provide a valid caption!");
-                    }
-                    $sql="SELECT * FROM picture_questions WHERE caption='$caption'";
-                    if(mysqli_num_rows(mysqli_query($con,$sql))>0){
-                        throw new Exception("A picture with the provided caption already exists in the database!");
-                    }                    
-                    $saveDir="picQuestions/";                    
-                    if(isset($_POST["submit"])) {                        
-                        $check = getimagesize($_FILES["image"]["tmp_name"]);
-                        if($check !== false) {
-                            $filename=md5_file($_FILES["image"]["tmp_name"]);
-                            $filetype=".".pathinfo($_FILES["image"]["name"],PATHINFO_EXTENSION);
-                            $target=$filename.$filetype;
-                            if (file_exists($saveDir.$target)) {
-                                throw new Exception("This picture already exists in the database!");
-                            }
-                            if (move_uploaded_file($_FILES["image"]["tmp_name"], $saveDir.$target)) {                                
-                                $sql="INSERT INTO picture_questions VALUES('$caption','$target')";
-                                if(mysqli_query($con,$sql)){                                    
-                                    $success="Picture Successfully Uploaded!";
-                                    $caption="";
-                                }else{
-                                    throw new Exception("Picture upload failed!");
-                                }
-                            } else {
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+            try{
+                $filename=$filetype="";
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception("Could Not Connect To Database !");   
+                $caption=test_input($_POST["caption"]);
+                if(test_blank($caption)){
+                    throw new Exception("Please provide a valid caption!");
+                }
+                $sql="SELECT * FROM picture_questions WHERE caption='$caption'";
+                if(mysqli_num_rows(mysqli_query($con,$sql))>0){
+                    throw new Exception("A picture with the provided caption already exists in the database!");
+                }                    
+                $saveDir="picQuestions/";                    
+                if(isset($_POST["submit"])) {                        
+                    $check = getimagesize($_FILES["image"]["tmp_name"]);
+                    if($check !== false) {
+                        $filename=md5_file($_FILES["image"]["tmp_name"]);
+                        $filetype=".".pathinfo($_FILES["image"]["name"],PATHINFO_EXTENSION);
+                        $target=$filename.$filetype;
+                        if (file_exists($saveDir.$target)) {
+                            throw new Exception("This picture already exists in the database!");
+                        }
+                        if (move_uploaded_file($_FILES["image"]["tmp_name"], $saveDir.$target)) {                                
+                            $sql="INSERT INTO picture_questions VALUES('$caption','$target')";
+                            if(mysqli_query($con,$sql)){                                    
+                                $success="Picture Successfully Uploaded!";
+                                $caption="";
+                            }else{
                                 throw new Exception("Picture upload failed!");
                             }
                         } else {
-                            throw new Exception("File uploaded is not a valid image!");
+                            throw new Exception("Picture upload failed!");
                         }
-                    }                                  
-                }
-                catch(Exception $e){
-                    $error=$e->getMessage();
-                }
+                    } else {
+                        throw new Exception("File uploaded is not a valid image!");
+                    }
+                }                                  
             }
+            catch(Exception $e){
+                $error=$e->getMessage();
+            }
+        }
     ?>
     <script>
         $(document).on("keypress", ":input:not(textarea)", function(event) {
@@ -153,13 +155,7 @@
         <?php
             }
         ?>
-    </div>
-    <?php
-        }else{
-            $_SERVER['HTTP_REFERER']="test";
-            include("noAccess.php");
-        }
-    ?>
+    </div>    
     <?php include("footer.php");?>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +9,7 @@
     <title>AOT TT - Email Writing</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -16,21 +17,18 @@
         .btn{
             white-space:normal !important;
             word-wrap:break-word;
-        }
+        } 
     </style>
 </head>
 
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Email Writing Practice</small></h1>
+    </div><br>
     <div class="container-fluid">
-        <?php include("header.php");?>
-        <?php
-            if (isset($_SESSION['aotemail_username'])){
-        ?>
+        <?php include("header.php");?>        
         <div class="row">
             <h2 class="text-center text-danger"><strong>Go through the guide provided before you attempt the test</strong></h2>
         </div><br><br>
@@ -38,7 +36,7 @@
             <form id="goToWrite" method="post" action="emailWriting.php">
                 <div class="col-md-5"></div>
                 <div class="col-md-2">
-                    <input type="hidden" name="validity" value="<?php echo $_SESSION['aotemail_username'];?>">
+                    <input type="hidden" name="validity" value="<?php echo sha1($_SESSION['username']);?>">
                     <input id="start" class="btn btn-primary btn-block btn-lg" value="START">
                 </div>
             </form>
@@ -78,14 +76,7 @@
         <div class="row">
               <h4 class="text-center text-danger"><small>(You cannot come back once you've started the test)</small></h4><br>
               <div class="alert alert-danger text-center"><strong>WARNING : ANY NAVIGATION ATTEMPT WILL AUTOMATICALLY END YOUR TEST !</strong></div>
-        </div>
-        <?php
-            }
-            else{
-                $_SERVER['HTTP_REFERER']="test";
-                include("loginAccess.php");
-            }
-        ?>
+        </div>        
         <?php include("footer.php");?>
     </div>
 </body>

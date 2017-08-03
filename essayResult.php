@@ -1,5 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
+    require 'loginPrivilege.php';
+    require_once 'DB.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,6 +10,7 @@
     <title>AOT TT - Result</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
@@ -29,29 +32,28 @@
 </head>
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Essay Writing Practice</small></h1>
+    </div><br>
     <div class="container-fluid">
         <?php
             error_reporting(0);
             include("header.php");
             date_default_timezone_set("Asia/Kolkata");
             $referer="essayWriting.php";
-            if (isset($_SESSION['aotemail_username'])){
-                if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
-                    $text=htmlspecialchars(trim($_POST["text"]));
-                    $question=$_POST["question"];                    
-                    $words=$_POST["words"];
-                    $wordColor=(string)$_POST["wordColor"];
-                    if(intval($words)<50)
-                        $wordSubtext="The Essay Is Too Short !";
-                    elseif(intval($words)>=50 and intval($words)<80)
-                        $wordSubtext="Looks Good !";
-                    else
-                        $wordSubtext="You Seem To Have Crossed The Average Word Limit !";
-                    $q_id=$_POST["q_id"];
+            if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
+                $text=htmlspecialchars(trim($_POST["text"]));
+                $question=$_POST["question"];                    
+                $words=$_POST["words"];
+                $wordColor=(string)$_POST["wordColor"];
+                if(intval($words)<150)
+                    $wordSubtext="The Essay Is Too Short !";
+                elseif(intval($words)>=200 and intval($words)<250)
+                    $wordSubtext="Looks Good !";
+                else
+                    $wordSubtext="You Seem To Have Crossed The Average Word Limit !";
+                $q_id=$_POST["q_id"];
         ?>
         <div class="container-fluid">
             <div id="headLine" class="row">
@@ -165,12 +167,7 @@
                 else{
                     $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
                     header('Refresh:0;url='.$redirect);
-                }
-            }
-            else{
-                $_SERVER['HTTP_REFERER']="test";
-                include("loginAccess.php");
-            }
+                }            
             ?>
         </div>
     <?php include("footer.php");?>

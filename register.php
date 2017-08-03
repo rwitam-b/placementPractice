@@ -1,5 +1,5 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
 ?>
 
@@ -10,6 +10,7 @@
     <title>AOT TT - Student Registration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -50,7 +51,7 @@
 <body>
     <?php
         error_reporting(0);
-        $fname=$mname=$lname=$year=$stream=$roll=$sex=$email=$error="";
+        $fname=$mname=$lname=$year=$stream=$roll=$sex=$email=$error=$success="";
         function test_input($data) {
                 $data = trim($data);
                 $data = stripslashes($data);
@@ -64,7 +65,7 @@
             else
                 return false;
         }
-        if (!isset($_SESSION['aotemail_username'])){
+        if (!isLoggedIn()){
             if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 try{
                     $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
@@ -160,15 +161,15 @@
                         }
                         $name=trim($name);
                         $roll=strtoupper($roll);
-                        $pass=strtoupper(md5($email.$pass));
+                        $pass=password_hash($email.$pass,PASSWORD_DEFAULT);
                         $sql="INSERT INTO students(name,sex,year,stream,roll,email,password) VALUES('$name','$sex','$year','$stream','$roll','$email','$pass')";
                         if(mysqli_query($con,$sql)){
-                            $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/afterReg.php?type=success';
+                            $success="You have been successfully registered!<br>Please proceed to the login section..";
+                            $fname=$mname=$lname=$year=$stream=$roll=$sex=$email=$error="";
                         }
                         else{
-                            $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/afterReg.php?type=failure';
+                            $error="Your request could not be processed because of some technical error!";
                         }
-                        header('Location: '.$redirect);
                     }
                 }
                 catch(Exception $e){
@@ -197,15 +198,14 @@
         });
     </script>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner">
+    </div><br>
     <div class="container-fluid">
         <?php include("header.php");?>
         <div class="container-fluid">
             <div class="row">
-                <h2 class="text-center">Registration Form</h2>
+                <h2 class="text-center">Student Registration Form</h2>
             </div><br>
             <div class="container">
                 <form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
@@ -286,6 +286,7 @@
                         </div>
                         <div class="col-md-5"></div>
                     </div>
+                </form>
                     <?php
                         if(!empty($error)){
                     ?>
@@ -304,8 +305,24 @@
                     </div>
                     <?php
                         }
-                    ?>
-                </form>
+                        if(!empty($success)){
+                    ?>  
+                    <script>
+                        $(window).load(function() {
+                            $("html, body").animate({ scrollTop: $(document).height()-$(window).height() }, 1000);
+                        });
+                    </script>
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div align="center" class="col-xs-8 alert alert-success text-center">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <strong><?php echo $success?></strong>
+                        </div>
+                        <div class="col-xs-2"></div>
+                    </div>
+                    <?php
+                        }
+                    ?>              
             </div>
         </div>
         <?php include("footer.php");?>

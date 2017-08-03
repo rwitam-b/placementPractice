@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +11,7 @@
     <title>AOT TT - Student Reports</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <script src="includes/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="includes/DataTables/datatables.min.css"/>
     <link rel="stylesheet" type="text/css" href="includes/DataTables/Buttons-1.3.1/css/buttons.dataTables.min.css"/>
@@ -19,9 +21,42 @@
     <script type="text/javascript" src="includes/DataTables/jszip.min.js"></script>
     <script type="text/javascript" src="includes/DataTables/Buttons-1.3.1/js/buttons.html5.min.js"></script>
     <style>
-     th {
-      text-align: center;
-    }
+        @font-face {
+            font-family: "Mohave-Bold";
+            src: url("includes/bootstrap/3.3.7/fonts/Mohave-Bold.otf") format("opentype");
+        }
+
+        th {
+          text-align: center;
+        }
+        
+        h1, h2, h3{
+            font-family: "Mohave-Bold";
+        }
+
+        h4, h5, h6{
+            font-family: "Mohave-SemiBold";
+        } 
+        
+        .banner{
+            display:block;
+            margin:auto;
+            max-width:80vw;            
+        }
+
+        .banner-small{
+            max-width: 70vw;
+        }
+
+        .jumbotron{
+            padding-bottom:0;
+            background-color:rgba(255,203,6,0.5);       
+            margin-bottom:0px;     
+        }
+
+        .jumbotron h1{
+            margin: 0px;
+        }
     </style>
     <script>
       function createTable(cols,data){
@@ -30,8 +65,7 @@
         $("#data thead").append("<tr></tr>");
         for(var i in cols){
           $("#data thead tr").append("<th>"+cols[i].toUpperCase().replace("_"," ")+"</th>");
-        }
-        console.log(data);
+        }        
         for(var i in data){
           $("#data tbody").append("<tr></tr>");
           for(var j in cols){
@@ -85,20 +119,14 @@
     </script>
 </head>
 
-<body>
-     <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+<body><br>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <div class="container-fluid">
         <?php
             include("header.php");
-            if(isset($_SESSION["aotemail_username"])){
-                if (isset($_SESSION['aotemail_student'])){
-                    $_SERVER['HTTP_REFERER']="test";
-                    include("noAccess.php");
-                }
-                if(isset($_SESSION['aotemail_admin'])){
         ?>
         <div class="container-fluid">
             <div class="row">
@@ -163,12 +191,7 @@
               </table>
             </div>
         </div>
-        <?php
-                }
-            }else{
-                $_SERVER['HTTP_REFERER']="test";
-                include("loginAccess.php");
-            }
+        <?php                        
             include("footer.php");
         ?>
     </div>

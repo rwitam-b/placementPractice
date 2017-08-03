@@ -1,7 +1,9 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
-    if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"]) and $_SERVER["REQUEST_METHOD"] == "POST"){
+    require 'adminPrivilege.php';
+
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
         try{
             $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
             if(mysqli_connect_errno())
@@ -21,10 +23,10 @@
               $sql="SELECT name,year,stream,roll,IFNULL(questions_email,0) AS 'email_attempts' FROM students";
             }
             else if($test=="Essay"){
-              $sql="SELECT name,year,stream,roll,IFNULL(questions_essay,0) AS 'essay_attempts' FROM students";
+              $sql="SELECT name,year,stream,roll,IFNULL(questions_essay,0) AS 'essay_attempts',IFNULL(questions_picture,0) AS 'picture_attempts' FROM students";
             }
             else{
-              $sql="SELECT name,year,stream,roll,IFNULL(questions_essay,0) AS 'essay_attempts',IFNULL(questions_email,0) AS 'email_attempts' FROM students";
+              $sql="SELECT name,year,stream,roll,IFNULL(questions_essay,0) AS 'essay_attempts',IFNULL(questions_picture,0) AS 'picture_attempts',IFNULL(questions_email,0) AS 'email_attempts' FROM students";
             }
             if($condition!="WHERE"){
               $sql=$sql." ".$condition;
@@ -43,6 +45,9 @@
               if(isset($arr[$i]["essay_attempts"])){
                 $arr[$i]["essay_attempts"]=$arr[$i]["essay_attempts"]==0?0:count(explode(',',$arr[$i]["essay_attempts"]));
               }
+              if(isset($arr[$i]["picture_attempts"])){
+                  $arr[$i]["picture_attempts"]=$arr[$i]["picture_attempts"]==0?0:count(explode(',',$arr[$i]["picture_attempts"]));
+              }
             }
             echo json_encode($arr);
             mysqli_close($con);
@@ -52,7 +57,6 @@
         }
     }
     else{
-        $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
-        header('Refresh:0;url='.$redirect);
+        echo "Not Available";
     }
 ?>

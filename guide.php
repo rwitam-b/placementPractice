@@ -1,5 +1,5 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
 ?>
 
 <!DOCTYPE html>
@@ -9,6 +9,7 @@
     <title>AOT TT - Guide</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -50,14 +51,13 @@
 
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-            <br><small>Email Writing Practice</small></h1>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner">        
     </div>
     <div class="container-fluid">
         <?php include("header.php");?>
         <div class="row">
-            <h2 class="text-center">Points To Remember&nbsp;<small><br>(Click To Elaborate)</small></h2>
+            <h2 class="text-center">Points To Remember For Email Writing&nbsp;<small><br>(Click To Elaborate)</small></h2>
         </div>
         <div align="center" class="row">
             <input type="checkbox" id="changeView" data-size="large" data-toggle="toggle" data-onstyle="danger" data-offstyle="success" data-on="Multiple Mode" data-off="Single Mode" value="0">
@@ -133,7 +133,7 @@
                             <h4 class="panel-title"><button class="btn btn-link btn-block" data-toggle="collapse" data-parent="#accordion2" data-target="#collapse2-4">Word Count</button></h4>
                         </div>
                         <div id="collapse2-4" class="panel-collapse collapse collapse2">
-                            <div class="panel-body">Keep the entire thing short and simple. Nobody got the time for long emails !<br><strong>Word Count(WC) Equation -&gt;<br> 50&nbsp;&lt;=&nbsp;WC&nbsp;&lt;=&nbsp;100</strong></div>
+                            <div class="panel-body">Keep the entire thing short and simple. Ain't nobody got time for long emails !<br><strong>Word Count(WC) Equation -&gt;<br> 50&nbsp;&lt;=&nbsp;WC&nbsp;&lt;=&nbsp;100</strong></div>
                         </div>
                     </div>
                     <div class="panel panel-info">

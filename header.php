@@ -1,3 +1,4 @@
+<?php require_once 'authentication.php';?>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
     <div class="collapse navbar-collapse" id="myNavbar">
@@ -16,13 +17,13 @@
                 </ul>
             </li>
         <?php
-            if (isset($_SESSION['aotemail_username']) and isset($_SESSION['aotemail_student'])){
+            if (isLoggedIn() and !isAdmin()){
         ?>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span class="glyphicon glyphicon-user"></span>&nbsp;<?php echo $_SESSION['aotemail_username'];?>
+                <span class="glyphicon glyphicon-user"></span>&nbsp;<?php echo $_SESSION['username'];?>
                 <span class="caret"></span>&nbsp;&nbsp;</a>
                 <ul class="dropdown-menu">
                     <li><a href="#">View Grades</a></li>
@@ -34,7 +35,7 @@
         </ul>
         <?php
             }
-            elseif(isset($_SESSION['aotemail_username']) and isset($_SESSION['aotemail_admin'])){
+            elseif(isLoggedIn() and isAdmin()){
         ?>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -64,7 +65,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span class="glyphicon glyphicon-user"></span>&nbsp;<?php echo $_SESSION['aotemail_username'];?>
+                <span class="glyphicon glyphicon-user"></span>&nbsp;<?php echo $_SESSION['username'];?>
                 <span class="caret"></span>&nbsp;&nbsp;</a>
                 <ul class="dropdown-menu">
                     <li><a href="addAdmin.php">Add Admin</a></li>

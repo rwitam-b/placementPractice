@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +11,7 @@
     <title>AOT TT - Essay Modification</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="includes/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="includes/bootstrap-tagsinput.css">
@@ -24,10 +26,10 @@
 </head>
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <?php
         include("header.php");
         error_reporting(0);
@@ -43,42 +45,41 @@
                 return true;
             else
                 return false;
-        }
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
-            $idFlag="false";
-            if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                    if(mysqli_connect_errno())
-                        throw new Exception("Could Not Connect To Database !");                    
-                    $question = mysqli_real_escape_string($con,test_input($_POST["question"]));                    
-                    if(isset($_POST["id"]) and !empty($_POST["id"]))
-                        $idFlag=$_POST["id"];
-                    $id=md5($question);
-                    $sql="SELECT * FROM essay_questions WHERE id='$id'";
-                    if(test_blank($question))
-                        throw new Exception("Please Fill In The Question !");
+        }        
+        $idFlag="false";
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+            try{
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception("Could Not Connect To Database !");                    
+                $question = mysqli_real_escape_string($con,test_input($_POST["question"]));                    
+                if(isset($_POST["id"]) and !empty($_POST["id"]))
+                    $idFlag=$_POST["id"];
+                $id=md5($question);
+                $sql="SELECT * FROM essay_questions WHERE id='$id'";
+                if(test_blank($question))
+                    throw new Exception("Please Fill In The Question !");
+                else{
+                    if(mysqli_num_rows(mysqli_query($con,$sql))>0){
+                        throw new Exception("This Question Has Not Been Modified !");
+                    }
+                    $sql="INSERT INTO essay_questions VALUES('$id','$question')";
+                    if(mysqli_query($con,$sql)){
+                        $sql="SELECT COUNT(*) FROM essay_questions";
+                        $result=mysqli_query($con,$sql);
+                        $row=mysqli_fetch_array($result,MYSQLI_NUM);
+                        $success="Essay Successfully Added Into The Database !<br>Total Question Count : ".$row[0];
+                        $id=$question="";
+                    }
                     else{
-                        if(mysqli_num_rows(mysqli_query($con,$sql))>0){
-                            throw new Exception("This Question Has Not Been Modified !");
-                        }
-                        $sql="INSERT INTO essay_questions VALUES('$id','$question')";
-                        if(mysqli_query($con,$sql)){
-                            $sql="SELECT COUNT(*) FROM essay_questions";
-                            $result=mysqli_query($con,$sql);
-                            $row=mysqli_fetch_array($result,MYSQLI_NUM);
-                            $success="Essay Successfully Added Into The Database !<br>Total Question Count : ".$row[0];
-                            $id=$question="";
-                        }
-                        else{
-                            throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
-                        }
+                        throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
                     }
                 }
-                catch(Exception $e){
-                    $error=$e->getMessage();
-                }
             }
+            catch(Exception $e){
+                $error=$e->getMessage();
+            }
+        }
     ?>
     <script>
         $(document).on("keypress", ":input:not(textarea)", function(event) {
@@ -197,13 +198,7 @@
         <?php
             }
         ?>
-    </div>
-    <?php
-        }else{
-            $_SERVER['HTTP_REFERER']="test";
-            include("noAccess.php");
-        }
-    ?>
+    </div>    
     <?php include("footer.php");?>
 </body>
 </html>

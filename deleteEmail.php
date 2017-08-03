@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +10,7 @@
     <title>AOT TT - Email Deletion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -17,14 +19,13 @@
 </head>
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <?php
         error_reporting(0);
-        include("header.php");
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
+        include("header.php");        
     ?>
     <script>
         $(window).ready(function(){
@@ -140,11 +141,7 @@
         </div>
 
     </div>
-    <?php
-        }else{
-            $_SERVER['HTTP_REFERER']="test";
-            include("noAccess.php");
-        }
+    <?php        
         include("footer.php");
     ?>
 </body>

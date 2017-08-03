@@ -1,6 +1,8 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
+    require 'loginPrivilege.php';
     require_once 'DB.php';
+    if(isset($_POST["validity"]) and strcmp($_POST["validity"],sha1($_SESSION["username"]))==0){
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +12,7 @@
     <title>AOT TT - Picture Interpretation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="includes/jquery-ui.css">
     <script src="includes/jquery.min.js"></script>
@@ -24,16 +27,28 @@
     </style>
 </head>
 
-<body oncontetmenu="return false;" oncopy="return false;" onpaste="return false;" oncut="return false;" ondrag="return false;" ondrop="return false;">
+<body oncontextmenu="return false;" oncopy="return false;" onpaste="return false;" oncut="return false;" ondrag="return false;" ondrop="return false;">
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner">
+        <h1 align="center"><small>Picture Interpretation Practice</small></h1>
+    </div><br>
     <div class="container-fluid">
         <?php
             error_reporting(0);
             include("header.php");
+
+            function csvToString($str){                
+                if(empty($str)){      
+                    return "''";
+                }else{
+                    $arr=explode(",",$str);
+                    for($a=0;$a<count($arr);$a++){
+                        $arr[$a]="'".$arr[$a]."'";
+                    }
+                    return implode(",",$arr);
+                }
+            }
 
             function add($existing,$addition){  
                 if(empty($existing)){      
@@ -43,65 +58,57 @@
                     array_push($arr,$addition);
                     return implode(",",$arr);
                 }
-            }            
-
-            if(isset($_POST["validity"]) and strcmp($_POST["validity"],sha1($_SESSION["aotemail_username"]))==0){
-                $email=$questions=$display=$pic="";
-                try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                    if(mysqli_connect_errno())
-                        throw new Exception();
-                    $sql="SELECT value FROM settings WHERE field='essayTime'";
-                    $result=mysqli_query($con,$sql);
-                    $row = mysqli_fetch_assoc($result);
-                    $DBtime=$row["value"];
-                    if(isset($_SESSION["aotemail_student"])){
-                        $email=$_SESSION["aotemail_student"];
-                        $sql="SELECT * FROM students WHERE email='$email'";
-                        $result=mysqli_query($con, $sql);
-                        $row = mysqli_fetch_array($result);
-                        $questions=$row['questions_picture'];
-                        $addFlag=1;
-                        if(!empty($questions)){
-                            $sql="SELECT * FROM picture_questions WHERE filename NOT IN($questions) ORDER BY RAND() LIMIT 1";
-                            $result=mysqli_query($con, $sql);
-                            $row = mysqli_fetch_array($result);
-                            if(empty($row)){
-                                $addFlag=0;
-                                $sql="SELECT * FROM picture_questions ORDER BY RAND() LIMIT 1";
-                                $result=mysqli_query($con, $sql);
-                                $row = mysqli_fetch_array($result);
-                            }
-                        }else{
-                            $sql="SELECT * FROM picture_questions ORDER BY RAND() LIMIT 1";
-                            $result=mysqli_query($con, $sql);
-                            $row = mysqli_fetch_array($result);                            
-                        }
-                        if($addFlag){
-                            $q_id=$row['filename'];
-                            $questions=add($questions,$q_id);
-                            $sql="UPDATE students SET questions_picture='$questions' WHERE email='$email'";
-                            mysqli_query($con, $sql);
-                        }
+            }
+            
+            $email=$questions=$display=$pic="";
+            try{
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception();
+                $sql="SELECT value FROM settings WHERE field='essayTime'";
+                $result=mysqli_query($con,$sql);
+                $row = mysqli_fetch_assoc($result);
+                $DBtime=$row["value"];
+                $email=$_SESSION["email"];
+                if(!isAdmin()){
+                    $sql="SELECT questions_picture FROM students WHERE email='$email'";
+                    $result=mysqli_query($con, $sql);
+                    $row = mysqli_fetch_array($result);
+                    $ques=$row['questions_picture'];                        
+                    $questions=csvToString($ques);
+                    $sql="SELECT * FROM picture_questions WHERE filename NOT IN($questions) ORDER BY RAND() LIMIT 1";
+                    $result=mysqli_query($con, $sql);
+                    $row = mysqli_fetch_array($result);
+                    if(!empty($row)){
+                        $ques=add($ques,$row['filename']);
+                        $sql="UPDATE students SET questions_picture='$ques' WHERE email='$email'";
+                        mysqli_query($con, $sql);
                     }
                     else{
                         $sql="SELECT * FROM picture_questions ORDER BY RAND() LIMIT 1";
                         $result=mysqli_query($con, $sql);
-                        $row = mysqli_fetch_array($result);     
-                    }                                   
-                    if(!empty($row)){                        
-                        $pic=$row['filename'];                        
-                    }
-                    else
-                        $display="No Questions Found In The Database !";
-                    $stat="yes";
+                        $row = mysqli_fetch_array($result);                            
+                    }                    
                 }
-                catch(Exception $e){
-                    $display="Error Connecting To Database !<br><br>Please Try Again Later !";
-                    $stat="no";
+                else{
+                    $sql="SELECT * FROM picture_questions ORDER BY RAND() LIMIT 1";
+                    $result=mysqli_query($con, $sql);
+                    $row = mysqli_fetch_array($result);     
+                }                                   
+                if(!empty($row)){                        
+                    $pic=$row['filename'];                        
                 }
-                if(isset($_SESSION["aotemail_student"]) or isset($_SESSION["aotemail_admin"])){
-
+                else
+                    $display="No Questions Found In The Database !";
+                $stat="yes";
+            }
+            catch(Exception $e){
+                $display="Error Connecting To Database !<br><br>Please Try Again Later !";
+                $stat="no";
+            }
+        ?>
+        <?php
+            if(!empty($pic)){
         ?>
         <script>
             words=0;
@@ -151,18 +158,19 @@
                     words=$(this).val().trim().split(/\b\W+\b/g).length;
                     $("#showWords").html( ($(this).val().length) ? words : "0");
                     $("#words").val($("#showWords").html());
-                    if(words<30)
+                    if(words<=100)
                         $("#wordCountSubText").html("Too Small !");
-                    else if(words<50)
+                    else if(words<150)
                         $("#wordCountSubText").html("Keep Going A Bit More !");
-                    else if(words>=50 && words <80)
-                        $("#wordCountSubText").html("Seems About Right !");
-                    else if(words>=80 && words<100)
-                        $("#wordCountSubText").html("It's Becoming Large Now !");
-                    else if(words>=100 && words<110)
+                    else if(words>=150 && words <200)
+                        $("#wordCountSubText").html("Almost There !");
+                    else if(words>=200 && words<230)
+                        $("#wordCountSubText").html("Seems Perfect !");
+                    else if(words>=230 && words<250)
                         $("#wordCountSubText").html("You Should Try To Conclude Now !");
                     else
                         $("#wordCountSubText").html("You Should Definitely Stop Now !");
+                    
                 });
             });
             function setColor(){
@@ -194,7 +202,7 @@
             }
             setInterval(setColor,5000);
         </script>
-        <div class="container-fluid">
+    <div class="container-fluid">
             <div id="headLine" class="row">
                 <div class="text-center col-md-4 col-xs-12">
                     <h4 id="wordCount"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;<strong>Word Count : <span id="showWords">0</span></strong><br><small><span id="wordCountSubText">Too Small !</span></small></h4>
@@ -232,45 +240,20 @@
                     <div class="col-md-5"></div>
                 </div>
             </form>
-            <?php
-                }
-                else{
-                    $_SERVER['HTTP_REFERER']="test";
-                    include("loginAccess.php");
-                }
-            }
-            else{
-            ?>
-            <script>
-                $(document).ready(function() {
-                    $("html, body").animate({ scrollTop: $(document).height()-$(window).height() }, 2000);
-                    $('#myModal').modal('show');
-                });
-            </script>
-            <div align="center" class="row">
-                    <img class="img-responsive" src="images/block.jpg">
-            </div>
-            <div id="myModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Access Denied</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Please Visit The <strong>Essay Writing</strong> Section To Attempt An Email !</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php
-            }
-            ?>
         </div>
-    <?php include("footer.php");?>
+        <?php                        
+            }else{
+        ?>
+        <h1 class="text-center"><?php echo $display;?></h1>
+    <?php                
+        }
+    }
+    else{
+        $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
+        header("Location: $redirect");            
+    }
+    include("footer.php");
+    ?>
     </div>
 </body>
 </html>

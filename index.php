@@ -1,24 +1,30 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>AOT TT - Email Writing</title>
+    <title>AOT Talent Transformation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="includes/jquery.min.js"></script>
     <script src="includes/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>        
+        .container-fluid{
+            padding-left:0px;
+            padding-right:0px;
+        }
+    </style>
 </head>
 
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner">        
     </div>
     <div class="container-fluid">
         <?php include("header.php");?>

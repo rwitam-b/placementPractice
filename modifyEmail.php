@@ -1,6 +1,7 @@
 <?php
-    require 'tryLogin.php';
+    require 'sessionize.php';
     require_once 'DB.php';
+    require 'adminPrivilege.php';
 ?>
 
 <!DOCTYPE html>
@@ -10,6 +11,7 @@
     <title>AOT TT - Email Modification</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="includes/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="includes/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="includes/bootstrap-tagsinput.css">
@@ -24,10 +26,10 @@
 </head>
 <body>
     <br>
-    <div class="jumbotron">
-        <h1 align="center">AOT Talent Transformation
-        <br><small>Email Writing Practice</small></h1>
-    </div>
+    <div class="jumbotron">          
+        <img src="images/banner.png" class="banner banner-small">
+        <h1 align="center"><small>Admin Panel</small></h1>
+    </div><br>
     <?php
         include("header.php");
         error_reporting(0);
@@ -43,51 +45,50 @@
                 return true;
             else
                 return false;
-        }
-        if(isset($_SESSION["aotemail_username"]) and isset($_SESSION["aotemail_admin"])){
-            $idFlag="false";
-            if ($_SERVER["REQUEST_METHOD"] == "POST"){
-                try{
-                    $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-                    if(mysqli_connect_errno())
-                        throw new Exception("Could Not Connect To Database !");
-                    $sender = mysqli_real_escape_string($con,test_input($_POST["sender"]));
-                    $receiver = mysqli_real_escape_string($con,test_input($_POST["receiver"]));
-                    $question = mysqli_real_escape_string($con,test_input($_POST["question"]));
-                    $phrases = mysqli_real_escape_string($con,test_input($_POST["phrases"]));
-                    $s_type = $_POST["s_type"];
-                    $r_type= $_POST["r_type"];
-                    if(strcmp($s_type,"N")==0)
-                        $sender="--ANY--";
-                    if(strcmp($r_type,"NS")==0)
-                        $receiver="--ANY--";
-                    if(isset($_POST["id"]) and !empty($_POST["id"]))
-                        $idFlag=$_POST["id"];
-                    $id=md5($sender.$receiver.$question.$phrases.$r_type.$s_type);
-                    $sql="SELECT * FROM email_questions WHERE id='$id'";
-                    if(test_blank($sender,$receiver,$question,$phrases))
-                        throw new Exception("Please Fill In All The Fields !");
+        }        
+        $idFlag="false";
+        if ($_SERVER["REQUEST_METHOD"] == "POST"){
+            try{
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception("Could Not Connect To Database !");
+                $sender = mysqli_real_escape_string($con,test_input($_POST["sender"]));
+                $receiver = mysqli_real_escape_string($con,test_input($_POST["receiver"]));
+                $question = mysqli_real_escape_string($con,test_input($_POST["question"]));
+                $phrases = mysqli_real_escape_string($con,test_input($_POST["phrases"]));
+                $s_type = $_POST["s_type"];
+                $r_type= $_POST["r_type"];
+                if(strcmp($s_type,"N")==0)
+                    $sender="--ANY--";
+                if(strcmp($r_type,"NS")==0)
+                    $receiver="--ANY--";
+                if(isset($_POST["id"]) and !empty($_POST["id"]))
+                    $idFlag=$_POST["id"];
+                $id=md5($sender.$receiver.$question.$phrases.$r_type.$s_type);
+                $sql="SELECT * FROM email_questions WHERE id='$id'";
+                if(test_blank($sender,$receiver,$question,$phrases))
+                    throw new Exception("Please Fill In All The Fields !");
+                else{
+                    if(mysqli_num_rows(mysqli_query($con,$sql))>0){
+                        throw new Exception("This Question Has Not Been Modified !");
+                    }
+                    $sql="INSERT INTO email_questions VALUES('$id','$sender','$receiver','$question','$phrases','$r_type','$s_type')";
+                    if(mysqli_query($con,$sql)){
+                        $sql="SELECT COUNT(*) FROM email_questions";
+                        $result=mysqli_query($con,$sql);
+                        $row=mysqli_fetch_array($result,MYSQLI_NUM);
+                        $success="Email Successfully Added Into The Database !<br>Total Question Count : ".$row[0];
+                        $id=$sender=$receiver=$question=$phrases=$error="";
+                    }
                     else{
-                        if(mysqli_num_rows(mysqli_query($con,$sql))>0){
-                            throw new Exception("This Question Has Not Been Modified !");
-                        }
-                        $sql="INSERT INTO email_questions VALUES('$id','$sender','$receiver','$question','$phrases','$r_type','$s_type')";
-                        if(mysqli_query($con,$sql)){
-                            $sql="SELECT COUNT(*) FROM email_questions";
-                            $result=mysqli_query($con,$sql);
-                            $row=mysqli_fetch_array($result,MYSQLI_NUM);
-                            $success="Email Successfully Added Into The Database !<br>Total Question Count : ".$row[0];
-                            $id=$sender=$receiver=$question=$phrases=$error="";
-                        }
-                        else{
-                            throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
-                        }
+                        throw new Exception("Some Technical Glitch Occured<br>Please Try Again Later !");
                     }
                 }
-                catch(Exception $e){
-                    $error=$e->getMessage();
-                }
             }
+            catch(Exception $e){
+                $error=$e->getMessage();
+            }
+        }
     ?>
     <script>
         $(document).on("keypress", ":input:not(textarea)", function(event) {
@@ -310,13 +311,7 @@
         <?php
             }
         ?>
-    </div>
-    <?php
-        }else{
-            $_SERVER['HTTP_REFERER']="test";
-            include("noAccess.php");
-        }
-    ?>
+    </div>    
     <?php include("footer.php");?>
 </body>
 </html>
