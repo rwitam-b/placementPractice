@@ -55,10 +55,9 @@
                 }                    
                 $saveDir="picQuestions/";
                 $file="picQuestions";
-                if(is_dir($file))
-                    echo ("$file is a directory");
-                else
-                    echo ("$file is not a directory");
+                if(!is_dir($file)){
+                    mkdir($file, 0700);
+                }                    
                 if(isset($_POST["submit"])) {                        
                     $check = getimagesize($_FILES["image"]["tmp_name"]);
                     if($check !== false) {
