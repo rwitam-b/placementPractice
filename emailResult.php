@@ -173,12 +173,12 @@
                             },
                             "\n\n\n\n",
                             {
-                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$question);?>".replace(/<--nl-->/g,"\n"), 
+                                text: <?php echo json_encode($question);?>,
                                 style: "subheader"
                             },
                             "\n\n",
                             { 
-                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$text);?>".replace(/<--nl-->/g,"\n"), 
+                                text: <?php echo json_encode($text);?>, 
                                 style: "text"
                             },
                             "\n\n",

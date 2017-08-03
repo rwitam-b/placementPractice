@@ -80,7 +80,7 @@
             </div><br><br>  
             <div class="row">
                 <div class="well">
-                    <h5 align="left"><img src="images/atdbuttontr.gif"><a href="javascript:check()" id="checkLink">Check Grammar and Spelling</a></h5>
+                    <h5 align="left"><img src="images/atdbuttontr.gif"><a href="javascript:check()" id="checkLink">Check Spelling</a></h5>
                     <h4 align="center"><strong>Essay You Wrote</strong></h4>
                     <textarea id="writtenText" style="resize:none;" rows=10 class="form-control"><?php echo $text;?></textarea>
                 </div>
@@ -141,7 +141,7 @@
                             },
                             '\n',
                             { 
-                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$text);?>".replace(/<--nl-->/g,"\n"),
+                                text: <?php echo json_encode($text);?>,
                                 style: 'text'
                             }
                         ],

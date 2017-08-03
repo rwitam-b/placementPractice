@@ -25,9 +25,7 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <span class="glyphicon glyphicon-user"></span>&nbsp;<?php echo $_SESSION['username'];?>
                 <span class="caret"></span>&nbsp;&nbsp;</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">View Grades</a></li>
-                    <li><a href="#">View Profile</a></li>
+                <ul class="dropdown-menu">                    
                     <li><a href="#">Edit Profile</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>

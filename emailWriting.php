@@ -82,11 +82,11 @@
                         $sql="UPDATE students SET questions_email='$ques' WHERE email='$email'";
                         mysqli_query($con, $sql);
                     }
-                    // else{                            
-                    //     $sql="SELECT * FROM email_questions ORDER BY RAND() LIMIT 1";
-                    //     $result=mysqli_query($con, $sql);
-                    //     $row = mysqli_fetch_array($result);
-                    // }                        
+                    else{                            
+                        $sql="SELECT * FROM email_questions ORDER BY RAND() LIMIT 1";
+                        $result=mysqli_query($con, $sql);
+                        $row = mysqli_fetch_array($result);
+                    }                        
                 }
                 else{
                     $sql="SELECT * FROM email_questions ORDER BY RAND() LIMIT 1";
