@@ -173,7 +173,7 @@
                             },
                             "\n\n\n\n",
                             {
-                                text: "<?php echo $question;?>",
+                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$question);?>".replace(/<--nl-->/g,"\n"), 
                                 style: "subheader"
                             },
                             "\n\n",

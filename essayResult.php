@@ -2,6 +2,8 @@
     require 'sessionize.php';
     require 'loginPrivilege.php';
     require_once 'DB.php';
+    $referer="essayWriting.php"; 
+    if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,13 +40,19 @@
     </div><br>
     <div class="container-fluid">
         <?php
-            error_reporting(0);
-            include("header.php");
-            date_default_timezone_set("Asia/Kolkata");
-            $referer="essayWriting.php";
-            if(isset($_SERVER['HTTP_REFERER']) and strpos($_SERVER['HTTP_REFERER'], $referer)!== false and $_SERVER["REQUEST_METHOD"]=="POST"){
-                $text=htmlspecialchars(trim($_POST["text"]));
-                $question=$_POST["question"];                    
+            try{
+                error_reporting(0);
+                include("header.php");
+                date_default_timezone_set("Asia/Kolkata");
+                $con = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+                if(mysqli_connect_errno())
+                    throw new Exception();            
+                $q_id=$_POST["q_id"];
+                $sql="SELECT * FROM essay_questions WHERE id='$q_id'";
+                $result=mysqli_query($con,$sql);
+                $row = mysqli_fetch_assoc($result);
+                $question=$row["question"];           
+                $text=htmlspecialchars(trim($_POST["text"]));                        
                 $words=$_POST["words"];
                 $wordColor=(string)$_POST["wordColor"];
                 if(intval($words)<150)
@@ -52,8 +60,11 @@
                 elseif(intval($words)>=200 and intval($words)<250)
                     $wordSubtext="Looks Good !";
                 else
-                    $wordSubtext="You Seem To Have Crossed The Average Word Limit !";
-                $q_id=$_POST["q_id"];
+                    $wordSubtext="You Seem To Have Crossed The Average Word Limit !";                
+            }catch(Exception $e){
+                $display="Error Connecting To Database !<br><br>Please Try Again Later !";
+                $stat="no";
+            }   
         ?>
         <div class="container-fluid">
             <div id="headLine" class="row">
@@ -126,7 +137,7 @@
                             },
                             '\n\n\n\n',
                             {
-                                text: '<?php echo $question;?>',
+                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$question);?>".replace(/<--nl-->/g,"\n"), 
                                 style: 'subheader'
                             },
                             '\n',

@@ -141,7 +141,7 @@
                             },
                             '\n',
                             { 
-                                text: '<?php echo $text;?>', 
+                                text: "<?php echo str_replace(PHP_EOL,"<--nl-->",$text);?>".replace(/<--nl-->/g,"\n"),
                                 style: 'text'
                             }
                         ],
