@@ -257,7 +257,7 @@
                     $("#timer").css("color","red");
                     $("#wordCount").css("color","<?php echo $wordColor;?>");
                     $("html, body").animate({ scrollTop: 300 }, 2000);
-                    $.post("ajaxResults.php",{"q_id": "<?php echo $q_id;?>", "text": "<?php echo json_encode($toProcess);?>"},
+                    $.post("ajaxResults.php",{"q_id": "<?php echo $q_id;?>", "text": <?php echo json_encode($text);?>},
                         function (response){
                             try{
                                 $("#check").html(response);

@@ -326,8 +326,7 @@
             $sql="SELECT * FROM email_questions WHERE id='$id'";
             $result=mysqli_query($con,$sql);
             $data = mysqli_fetch_assoc($result);              
-            $text=trim($_POST["text"]);
-            $text=json_decode($text);
+            $text=trim($_POST["text"]);            
             $text=explode(PHP_EOL,$text);
             $results=array();
             array_push($results,encodeOutput("Subject", checkSubject($text[0],$data)));
