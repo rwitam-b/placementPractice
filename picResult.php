@@ -162,7 +162,7 @@
                             }
                         }
                     }
-                    var name="essay_"+"<?php echo $_SESSION['aotemail_username'];?>".toLowerCase().replace(/\s+/g,"_")+"@"+new Date().toLocaleDateString().replace(/[/]/g,"_");
+                    var name="essay_"+"<?php echo $_SESSION['username'];?>".toLowerCase().replace(/\s+/g,"_")+"@"+new Date().toLocaleDateString().replace(/[/]/g,"_");
                     pdfMake.createPdf(dd).download(name);                    
                 }
                 $(document).ready(function(){
