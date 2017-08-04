@@ -327,20 +327,22 @@
             $result=mysqli_query($con,$sql);
             $data = mysqli_fetch_assoc($result);              
             $text=trim($_POST["text"]);            
-            $text=explode(PHP_EOL,$text);
+            $text=preg_split("/\R+/",$text);            
+            for($test=0;$test<count($text);$test++){
+                $text[$test]=trim($text[$test]);
+            }
             $results=array();
             array_push($results,encodeOutput("Subject", checkSubject($text[0],$data)));
             $index=0;
             if(startswith(strtolower($text[0]),"subject:")){
-                $index = 1;
+                $index++;
             }
-            else{
-                $index = 0;                
-            }            
+                      
             array_push($results,encodeOutput("Receiver", checkRecipient($text[$index],$data)));
             if(startswith(strtolower($text[$index]),"dear")){
-                $index += 1;
+                $index++;
             }
+            
             $body=array();
             foreach($text as $line){
                 if("Regards," == $line or "Yours faithfully," == $line or "Yours sincerely," == $line){

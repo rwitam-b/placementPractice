@@ -83,7 +83,7 @@
             </div>
             <div class="row">
                 <br>
-                <span id="questionHTML" class="text-center"><?php echo $question;?></span>
+                <span id="questionHTML" class="text-center"><strong><?php echo $question;?></strong></span>
                 <br><br>
             </div>
             <div class="row">

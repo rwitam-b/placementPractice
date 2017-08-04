@@ -207,7 +207,7 @@
             </div>
             <div class="row">
                 <br>
-                <span class="text-center"><strong><?php echo $display;?></strong><br></span>
+                <span id="blah" class="text-center"><strong><?php echo nl2br($display);?></strong><br></span>
                 <input type="hidden" id="status" value="<?php echo $stat;?>">
                 <br><br>
             </div>
